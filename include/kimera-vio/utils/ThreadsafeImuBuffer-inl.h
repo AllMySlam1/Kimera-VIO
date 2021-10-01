@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ *all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
-*******************************************************************************/
+ *******************************************************************************/
 
 /********************************************************************************
  Copyright 2017 Autonomous Systems Lab, ETH Zurich, Switzerland
@@ -49,48 +49,54 @@ namespace VIO {
 
 namespace utils {
 
-inline void ThreadsafeImuBuffer::addMeasurement(
-    const Timestamp& timestamp_nanoseconds,
-    const ImuAccGyr& imu_measurement) {
-  // Enforce strict time-wise ordering.
-  ImuMeasurement last_value;
-  if (buffer_.getNewestValue(&last_value)) {
-    CHECK_GT(timestamp_nanoseconds, last_value.timestamp_)
-        << "Timestamps not strictly increasing.";
-  }
-  buffer_.addValue(
-      timestamp_nanoseconds,
-      ImuMeasurement(timestamp_nanoseconds, imu_measurement));
+    inline void
+    ThreadsafeImuBuffer::addMeasurement(const Timestamp& timestamp_nanoseconds,
+                                        const ImuAccGyr& imu_measurement)
+    {
+        // Enforce strict time-wise ordering.
+        ImuMeasurement last_value;
+        if (buffer_.getNewestValue(&last_value)) {
+            CHECK_GT(timestamp_nanoseconds, last_value.timestamp_)
+                << "Timestamps not strictly increasing.";
+        }
+        buffer_.addValue(
+            timestamp_nanoseconds,
+            ImuMeasurement(timestamp_nanoseconds, imu_measurement));
 
-  // Notify possibly waiting consumers.
-  cv_new_measurement_.notify_all();
-}
+        // Notify possibly waiting consumers.
+        cv_new_measurement_.notify_all();
+    }
 
-inline void ThreadsafeImuBuffer::addMeasurements(
-    const ImuStampS& timestamps_nanoseconds,
-    const ImuAccGyrS& imu_measurements) {
-  CHECK_EQ(timestamps_nanoseconds.cols(), imu_measurements.cols());
-  size_t num_samples = timestamps_nanoseconds.cols();
-  CHECK_GT(num_samples, 0u);
+    inline void ThreadsafeImuBuffer::addMeasurements(
+        const ImuStampS&  timestamps_nanoseconds,
+        const ImuAccGyrS& imu_measurements)
+    {
+        CHECK_EQ(timestamps_nanoseconds.cols(), imu_measurements.cols());
+        size_t num_samples = timestamps_nanoseconds.cols();
+        CHECK_GT(num_samples, 0u);
 
-  for (size_t idx = 0u; idx < num_samples; ++idx) {
-    addMeasurement(timestamps_nanoseconds(idx), imu_measurements.col(idx));
-  }
-}
+        for (size_t idx = 0u; idx < num_samples; ++idx) {
+            addMeasurement(timestamps_nanoseconds(idx),
+                           imu_measurements.col(idx));
+        }
+    }
 
-inline void ThreadsafeImuBuffer::clear() {
-  buffer_.clear();
-}
+    inline void ThreadsafeImuBuffer::clear()
+    {
+        buffer_.clear();
+    }
 
-inline size_t ThreadsafeImuBuffer::size() const {
-  return buffer_.size();
-}
+    inline size_t ThreadsafeImuBuffer::size() const
+    {
+        return buffer_.size();
+    }
 
-inline void ThreadsafeImuBuffer::shutdown() {
-  shutdown_ = true;
-  cv_new_measurement_.notify_all();
-}
+    inline void ThreadsafeImuBuffer::shutdown()
+    {
+        shutdown_ = true;
+        cv_new_measurement_.notify_all();
+    }
 
-} // End of utils namespace.
+}  // namespace utils
 
-} // End of VIO namespace.
+}  // namespace VIO

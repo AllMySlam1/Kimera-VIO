@@ -23,39 +23,41 @@
 namespace VIO {
 
 enum class MeshOptimizerType {
-  kConnectedMesh = 0,
-  kDisconnectedMesh = 1,
-  kClosedForm = 2,
-  kGtsamMesh = 3
+    kConnectedMesh    = 0,
+    kDisconnectedMesh = 1,
+    kClosedForm       = 2,
+    kGtsamMesh        = 3
 };
 
 enum class MeshColorType {
-  kVertexFlatColor = 0,
-  kVertexRGB = 1,
-  kVertexDepthVariance = 2,
-  kVertexSupport = 3,
+    kVertexFlatColor     = 0,
+    kVertexRGB           = 1,
+    kVertexDepthVariance = 2,
+    kVertexSupport       = 3,
 };
 
-struct MeshOptimizationInput {
-  KIMERA_POINTER_TYPEDEFS(MeshOptimizationInput);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(MeshOptimizationInput);
+struct MeshOptimizationInput
+{
+    KIMERA_POINTER_TYPEDEFS(MeshOptimizationInput);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(MeshOptimizationInput);
 
-  MeshOptimizationInput() = default;
-  ~MeshOptimizationInput() = default;
+    MeshOptimizationInput()  = default;
+    ~MeshOptimizationInput() = default;
 
-  cv::Mat pcl;
-  cv::Mat pcl_colors;
-  Mesh2D mesh_2d;
+    cv::Mat pcl;
+    cv::Mat pcl_colors;
+    Mesh2D  mesh_2d;
 };
 
-struct MeshOptimizationOutput {
-  KIMERA_POINTER_TYPEDEFS(MeshOptimizationOutput);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(MeshOptimizationOutput);
+struct MeshOptimizationOutput
+{
+    KIMERA_POINTER_TYPEDEFS(MeshOptimizationOutput);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(MeshOptimizationOutput);
 
-  MeshOptimizationOutput() = default;
-  ~MeshOptimizationOutput() = default;
+    MeshOptimizationOutput()  = default;
+    ~MeshOptimizationOutput() = default;
 
-  Mesh3D optimized_mesh_3d;
+    Mesh3D optimized_mesh_3d;
 };
 
 }  // namespace VIO

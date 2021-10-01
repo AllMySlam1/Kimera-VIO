@@ -26,32 +26,32 @@ namespace VIO {
  * Base class for non maximum suppression algorithms
  */
 class NonMaximumSuppression {
- public:
-  KIMERA_POINTER_TYPEDEFS(NonMaximumSuppression);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(NonMaximumSuppression);
+  public:
+    KIMERA_POINTER_TYPEDEFS(NonMaximumSuppression);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(NonMaximumSuppression);
 
-  NonMaximumSuppression() = default;
-  virtual ~NonMaximumSuppression() = default;
+    NonMaximumSuppression()          = default;
+    virtual ~NonMaximumSuppression() = default;
 
- public:
-  virtual std::vector<cv::KeyPoint> suppressNonMax(
-      const std::vector<cv::KeyPoint>& keyPoints,
-      const int& numRetPoints,
-      const float& tolerance,
-      const int& cols,
-      const int& rows) = 0;
+  public:
+    virtual std::vector<cv::KeyPoint>
+    suppressNonMax(const std::vector<cv::KeyPoint>& keyPoints,
+                   const int&                       numRetPoints,
+                   const float&                     tolerance,
+                   const int&                       cols,
+                   const int&                       rows) = 0;
 };
 
 /**
  * Types of supported Adaptive Non Maximum Suppression algorithms
  */
 enum class AnmsAlgorithmType : unsigned int {
-  TopN = 0,
-  BrownANMS = 1,
-  SDC = 2,
-  KdTree = 3,
-  RangeTree = 4,
-  Ssc = 5,
+    TopN      = 0,
+    BrownANMS = 1,
+    SDC       = 2,
+    KdTree    = 3,
+    RangeTree = 4,
+    Ssc       = 5,
 };
 
 /**
@@ -63,31 +63,32 @@ enum class AnmsAlgorithmType : unsigned int {
  spatial keypoint distribution}, Pattern Recognition Letters
  */
 class AdaptiveNonMaximumSuppression : public NonMaximumSuppression {
- public:
-  KIMERA_POINTER_TYPEDEFS(AdaptiveNonMaximumSuppression);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(AdaptiveNonMaximumSuppression);
-  AdaptiveNonMaximumSuppression(const AnmsAlgorithmType& anms_algorithm_type);
-  virtual ~AdaptiveNonMaximumSuppression() = default;
+  public:
+    KIMERA_POINTER_TYPEDEFS(AdaptiveNonMaximumSuppression);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(AdaptiveNonMaximumSuppression);
+    AdaptiveNonMaximumSuppression(const AnmsAlgorithmType& anms_algorithm_type);
+    virtual ~AdaptiveNonMaximumSuppression() = default;
 
- public:
-  std::vector<cv::KeyPoint> suppressNonMax(
-      const std::vector<cv::KeyPoint>& keyPoints,
-      const int& numRetPoints,
-      const float& tolerance,
-      const int& cols,
-      const int& rows) override;
+  public:
+    std::vector<cv::KeyPoint>
+    suppressNonMax(const std::vector<cv::KeyPoint>& keyPoints,
+                   const int&                       numRetPoints,
+                   const float&                     tolerance,
+                   const int&                       cols,
+                   const int&                       rows) override;
 
-  /**
-   * @brief setAnmsAlgorithm in case the user wants to dynamically change the
-   * ANMS algorithm (not sure why someone would do that, but here it is).
-   * @param anms_algorithm_type
-   */
-  inline void setAnmsAlgorithm(const AnmsAlgorithmType& anms_algorithm_type) {
-    anms_algorithm_type_ = anms_algorithm_type;
-  }
+    /**
+     * @brief setAnmsAlgorithm in case the user wants to dynamically change the
+     * ANMS algorithm (not sure why someone would do that, but here it is).
+     * @param anms_algorithm_type
+     */
+    inline void setAnmsAlgorithm(const AnmsAlgorithmType& anms_algorithm_type)
+    {
+        anms_algorithm_type_ = anms_algorithm_type;
+    }
 
- protected:
-  AnmsAlgorithmType anms_algorithm_type_;
+  protected:
+    AnmsAlgorithmType anms_algorithm_type_;
 };
 
 }  // namespace VIO

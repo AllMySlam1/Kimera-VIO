@@ -19,6 +19,8 @@
 namespace VIO {
 
 DisplayBase::DisplayBase(const DisplayType& display_type)
-    : display_type_(display_type) {}
+    : display_type_(display_type)
+{
+}
 
 }  // namespace VIO

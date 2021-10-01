@@ -21,11 +21,12 @@
 namespace VIO {
 
 class UtilsGeometry {
- public:
-  /* ------------------------------------------------------------------------ */
-  // Open files with name output_filename, and checks that it is valid.
-  static double getRatioBetweenTangentialAndRadialDisplacement(
-      const std::vector<gtsam::Point3>& points);
+  public:
+    /* ------------------------------------------------------------------------
+     */
+    // Open files with name output_filename, and checks that it is valid.
+    static double getRatioBetweenTangentialAndRadialDisplacement(
+        const std::vector<gtsam::Point3>& points);
 };
 
 }  // namespace VIO

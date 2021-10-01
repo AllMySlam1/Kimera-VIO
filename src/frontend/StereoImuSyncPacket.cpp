@@ -20,49 +20,48 @@
 
 namespace VIO {
 
-StereoImuSyncPacket::StereoImuSyncPacket(const StereoFrame& stereo_frame,
-                                         const ImuStampS& imu_stamps,
-                                         const ImuAccGyrS& imu_accgyrs,
+StereoImuSyncPacket::StereoImuSyncPacket(const StereoFrame&  stereo_frame,
+                                         const ImuStampS&    imu_stamps,
+                                         const ImuAccGyrS&   imu_accgyrs,
                                          const ReinitPacket& reinit_packet)
-    : FrontendInputPacketBase(stereo_frame.timestamp_,
-                              imu_stamps,
-                              imu_accgyrs),
-      stereo_frame_(stereo_frame),
-      reinit_packet_(reinit_packet) {
-  // The timestamp of the last IMU measurement must correspond to the timestamp
-  // of the stereo frame. In case there is no IMU measurement with exactly
-  // the same timestamp as the stereo frame, the user should interpolate
-  // IMU measurements to get a value at the time of the stereo_frame.
-  CHECK_GT(imu_stamps_.cols(), 0);
-  CHECK_EQ(stereo_frame_.timestamp_, imu_stamps_(imu_stamps_.cols() - 1));
-  // TODO: Add check on ReinitPacket
+    : FrontendInputPacketBase(stereo_frame.timestamp_, imu_stamps, imu_accgyrs),
+      stereo_frame_(stereo_frame), reinit_packet_(reinit_packet)
+{
+    // The timestamp of the last IMU measurement must correspond to the
+    // timestamp of the stereo frame. In case there is no IMU measurement with
+    // exactly the same timestamp as the stereo frame, the user should
+    // interpolate IMU measurements to get a value at the time of the
+    // stereo_frame.
+    CHECK_GT(imu_stamps_.cols(), 0);
+    CHECK_EQ(stereo_frame_.timestamp_, imu_stamps_(imu_stamps_.cols() - 1));
+    // TODO: Add check on ReinitPacket
 }
 
-void StereoImuSyncPacket::print() const {
-  LOG(INFO) << "Stereo Frame timestamp: " << stereo_frame_.timestamp_
-            << '\n'
-            << "STAMPS IMU rows : \n"
-            << imu_stamps_.rows() << '\n'
-            << "STAMPS IMU cols : \n"
-            << imu_stamps_.cols() << '\n'
-            << "STAMPS IMU: \n"
-            << imu_stamps_ << '\n'
-            << "ACCGYR IMU rows : \n"
-            << imu_accgyrs_.rows() << '\n'
-            << "ACCGYR IMU cols : \n"
-            << imu_accgyrs_.cols() << '\n'
-            << "ACCGYR IMU: \n"
-            << imu_accgyrs_;
-  if (reinit_packet_.getReinitFlag() == true) {
-    LOG(INFO) << "\nVIO Re-Initialized at: " << reinit_packet_.getReinitTime()
-              << '\n'
-              << "POSE : \n"
-              << reinit_packet_.getReinitPose() << '\n'
-              << "VELOCITY : \n"
-              << reinit_packet_.getReinitVel() << '\n'
-              << "BIAS : \n"
-              << reinit_packet_.getReinitBias();
-  }
+void StereoImuSyncPacket::print() const
+{
+    LOG(INFO) << "Stereo Frame timestamp: " << stereo_frame_.timestamp_ << '\n'
+              << "STAMPS IMU rows : \n"
+              << imu_stamps_.rows() << '\n'
+              << "STAMPS IMU cols : \n"
+              << imu_stamps_.cols() << '\n'
+              << "STAMPS IMU: \n"
+              << imu_stamps_ << '\n'
+              << "ACCGYR IMU rows : \n"
+              << imu_accgyrs_.rows() << '\n'
+              << "ACCGYR IMU cols : \n"
+              << imu_accgyrs_.cols() << '\n'
+              << "ACCGYR IMU: \n"
+              << imu_accgyrs_;
+    if (reinit_packet_.getReinitFlag() == true) {
+        LOG(INFO) << "\nVIO Re-Initialized at: "
+                  << reinit_packet_.getReinitTime() << '\n'
+                  << "POSE : \n"
+                  << reinit_packet_.getReinitPose() << '\n'
+                  << "VELOCITY : \n"
+                  << reinit_packet_.getReinitVel() << '\n'
+                  << "BIAS : \n"
+                  << reinit_packet_.getReinitBias();
+    }
 }
 
 }  // namespace VIO

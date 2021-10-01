@@ -10,15 +10,18 @@
 
 namespace VIO {
 
-RgbdImuSyncPacket::RgbdImuSyncPacket(const Timestamp& timestamp,
+RgbdImuSyncPacket::RgbdImuSyncPacket(const Timestamp&     timestamp,
                                      RgbdFrame::UniquePtr rgbd_frame,
-                                     const ImuStampS& imu_stamps,
-                                     const ImuAccGyrS& imu_accgyr)
+                                     const ImuStampS&     imu_stamps,
+                                     const ImuAccGyrS&    imu_accgyr)
     : FrontendInputPacketBase(rgbd_frame->timestamp_, imu_stamps, imu_accgyr),
-      rgbd_frame_(std::move(rgbd_frame)) {}
+      rgbd_frame_(std::move(rgbd_frame))
+{
+}
 
-void RgbdImuSyncPacket::print() const {
-  // TODO
+void RgbdImuSyncPacket::print() const
+{
+    // TODO
 }
 
 }  // namespace VIO

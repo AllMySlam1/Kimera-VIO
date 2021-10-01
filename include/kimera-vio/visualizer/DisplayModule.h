@@ -33,26 +33,26 @@ namespace VIO {
  */
 class DisplayModule
     : public SISOPipelineModule<DisplayInputBase, NullPipelinePayload> {
- public:
-  KIMERA_POINTER_TYPEDEFS(DisplayModule);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(DisplayModule);
+  public:
+    KIMERA_POINTER_TYPEDEFS(DisplayModule);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(DisplayModule);
 
-  using SISO = SISOPipelineModule<DisplayInputBase, NullPipelinePayload>;
+    using SISO = SISOPipelineModule<DisplayInputBase, NullPipelinePayload>;
 
-  DisplayModule(DisplayQueue* input_queue,
-                OutputQueue* output_queue,
-                bool parallel_run,
-                DisplayBase::UniquePtr&& display);
+    DisplayModule(DisplayQueue*            input_queue,
+                  OutputQueue*             output_queue,
+                  bool                     parallel_run,
+                  DisplayBase::UniquePtr&& display);
 
-  virtual ~DisplayModule() = default;
+    virtual ~DisplayModule() = default;
 
-  OutputUniquePtr spinOnce(InputUniquePtr input) override;
+    OutputUniquePtr spinOnce(InputUniquePtr input) override;
 
-  typename MISO::InputUniquePtr getInputPacket() override;
+    typename MISO::InputUniquePtr getInputPacket() override;
 
- private:
-  // The renderer used to display the visualizer output.
-  DisplayBase::UniquePtr display_;
+  private:
+    // The renderer used to display the visualizer output.
+    DisplayBase::UniquePtr display_;
 };
 
 }  // namespace VIO

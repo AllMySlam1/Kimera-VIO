@@ -21,7 +21,7 @@
 
 namespace VIO {
 
-using StereoMeasurement = std::pair<LandmarkId, gtsam::StereoPoint2>;
+using StereoMeasurement  = std::pair<LandmarkId, gtsam::StereoPoint2>;
 using StereoMeasurements = std::vector<StereoMeasurement>;
 using StatusStereoMeasurements =
     std::pair<TrackerStatusSummary, StereoMeasurements>;
@@ -31,23 +31,21 @@ using StatusStereoMeasurementsPtr = std::shared_ptr<StatusStereoMeasurements>;
 enum Mesh2Dtype { VALIDKEYPOINTS, DENSE };
 
 ////////////////////////////////////////////////////////////////////////////////
-struct KeypointWithDepth {
- public:
-  KeypointWithDepth() = default;
-  KeypointWithDepth(const KeypointCV& p, const double& d) : px(p), depth(d) {}
+struct KeypointWithDepth
+{
+  public:
+    KeypointWithDepth() = default;
+    KeypointWithDepth(const KeypointCV& p, const double& d) : px(p), depth(d) {}
 
- public:
-  KeypointCV px;
-  double depth;
+  public:
+    KeypointCV px;
+    double     depth;
 };
 using KeypointsWithDepth = std::vector<KeypointWithDepth>;
 
 // Definitions relevant to StereoFrame type.
 using Points3d = std::vector<Vector3, Eigen::aligned_allocator<Vector3>>;
 
-enum class VisionSensorType { 
-STEREO = 0,
-RGBD = 1
-};
+enum class VisionSensorType { STEREO = 0, RGBD = 1 };
 
 }  // namespace VIO

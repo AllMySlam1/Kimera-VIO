@@ -28,78 +28,96 @@
 namespace VIO {
 
 // Inertial containers.
-using ImuStamp = Timestamp;
+using ImuStamp  = Timestamp;
 using ImuStampS = Eigen::Matrix<ImuStamp, 1, Eigen::Dynamic>;
 // First 3 elements correspond to acceleration data [m/s^2]
 // while the 3 last correspond to angular velocities [rad/s].
-using ImuAccGyr = Eigen::Matrix<double, 6, 1>;
-using ImuAcc = Eigen::Matrix<double, 3, 1>;
-using ImuGyr = Eigen::Matrix<double, 3, 1>;
+using ImuAccGyr  = Eigen::Matrix<double, 6, 1>;
+using ImuAcc     = Eigen::Matrix<double, 3, 1>;
+using ImuGyr     = Eigen::Matrix<double, 3, 1>;
 using ImuAccGyrS = Eigen::Matrix<double, 6, Eigen::Dynamic>;
-using ImuBias = gtsam::imuBias::ConstantBias;
+using ImuBias    = gtsam::imuBias::ConstantBias;
 
-struct ImuMeasurement {
-  ImuMeasurement() = default;
-  ImuMeasurement(const ImuStamp& timestamp, const ImuAccGyr& imu_data)
-      : timestamp_(timestamp), acc_gyr_(imu_data) {}
-  ImuMeasurement(ImuStamp&& timestamp, ImuAccGyr&& imu_data)
-      : timestamp_(std::move(timestamp)), acc_gyr_(std::move(imu_data)) {}
+struct ImuMeasurement
+{
+    ImuMeasurement() = default;
+    ImuMeasurement(const ImuStamp& timestamp, const ImuAccGyr& imu_data)
+        : timestamp_(timestamp), acc_gyr_(imu_data)
+    {
+    }
+    ImuMeasurement(ImuStamp&& timestamp, ImuAccGyr&& imu_data)
+        : timestamp_(std::move(timestamp)), acc_gyr_(std::move(imu_data))
+    {
+    }
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  ImuStamp timestamp_;
-  ImuAccGyr acc_gyr_;
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    ImuStamp  timestamp_;
+    ImuAccGyr acc_gyr_;
 };
 
 // Multiple Imu measurements, bundled in dynamic matrices.
-struct ImuMeasurements {
- public:
-  ImuMeasurements() = default;
-  ImuMeasurements(const ImuStampS& timestamps, const ImuAccGyrS& measurements)
-      : timestamps_(timestamps), acc_gyr_(measurements) {}
-  ImuMeasurements(ImuStampS&& timestamps, ImuAccGyrS&& measurements)
-      : timestamps_(std::move(timestamps)), acc_gyr_(std::move(measurements)) {}
+struct ImuMeasurements
+{
+  public:
+    ImuMeasurements() = default;
+    ImuMeasurements(const ImuStampS& timestamps, const ImuAccGyrS& measurements)
+        : timestamps_(timestamps), acc_gyr_(measurements)
+    {
+    }
+    ImuMeasurements(ImuStampS&& timestamps, ImuAccGyrS&& measurements)
+        : timestamps_(std::move(timestamps)), acc_gyr_(std::move(measurements))
+    {
+    }
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  ImuStampS timestamps_;
-  ImuAccGyrS acc_gyr_;
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    ImuStampS  timestamps_;
+    ImuAccGyrS acc_gyr_;
 };
 
 enum class ImuPreintegrationType {
-  kPreintegratedCombinedMeasurements = 0,
-  kPreintegratedImuMeasurements = 1
+    kPreintegratedCombinedMeasurements = 0,
+    kPreintegratedImuMeasurements      = 1
 };
 
 /* -------------------------------------------------------------------------- */
 inline const gtsam::PreintegratedImuMeasurements&
-safeCastToPreintegratedImuMeasurements(const gtsam::PreintegrationType& pim) {
-  try {
-    return dynamic_cast<const gtsam::PreintegratedImuMeasurements&>(pim);
-  } catch (const std::bad_cast& e) {
-    LOG(ERROR) << "Seems that you are casting PreintegratedType to "
-                  "PreintegratedImuMeasurements, but this object is not "
-                  "a PreintegratedImuMeasurements!";
-    LOG(FATAL) << e.what();
-  } catch (...) {
-    LOG(FATAL) << "Exception caught when casting to "
-                  "PreintegratedImuMeasurements.";
-  }
+safeCastToPreintegratedImuMeasurements(const gtsam::PreintegrationType& pim)
+{
+    try {
+        return dynamic_cast<const gtsam::PreintegratedImuMeasurements&>(pim);
+    }
+    catch (const std::bad_cast& e) {
+        LOG(ERROR) << "Seems that you are casting PreintegratedType to "
+                      "PreintegratedImuMeasurements, but this object is not "
+                      "a PreintegratedImuMeasurements!";
+        LOG(FATAL) << e.what();
+    }
+    catch (...) {
+        LOG(FATAL) << "Exception caught when casting to "
+                      "PreintegratedImuMeasurements.";
+    }
 }
 
 /* -------------------------------------------------------------------------- */
 inline const gtsam::PreintegratedCombinedMeasurements&
 safeCastToPreintegratedCombinedImuMeasurements(
-    const gtsam::PreintegrationType& pim) {
-  try {
-    return dynamic_cast<const gtsam::PreintegratedCombinedMeasurements&>(pim);
-  } catch (const std::bad_cast& e) {
-    LOG(ERROR) << "Seems that you are casting PreintegratedType to "
-                  "PreintegratedCombinedMeasurements, but this object is not "
-                  "a PreintegratedCombinedMeasurements!";
-    LOG(FATAL) << e.what();
-  } catch (...) {
-    LOG(FATAL) << "Exception caught when casting to "
-                  "PreintegratedCombinedMeasurements.";
-  }
+    const gtsam::PreintegrationType& pim)
+{
+    try {
+        return dynamic_cast<const gtsam::PreintegratedCombinedMeasurements&>(
+            pim);
+    }
+    catch (const std::bad_cast& e) {
+        LOG(ERROR)
+            << "Seems that you are casting PreintegratedType to "
+               "PreintegratedCombinedMeasurements, but this object is not "
+               "a PreintegratedCombinedMeasurements!";
+        LOG(FATAL) << e.what();
+    }
+    catch (...) {
+        LOG(FATAL) << "Exception caught when casting to "
+                      "PreintegratedCombinedMeasurements.";
+    }
 }
 
 }  // namespace VIO

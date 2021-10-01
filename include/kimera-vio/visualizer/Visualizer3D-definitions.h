@@ -32,86 +32,96 @@
 namespace VIO {
 
 enum class VisualizerType {
-  //! OpenCV 3D viz, uses VTK underneath the hood.
-  OpenCV = 0u
+    //! OpenCV 3D viz, uses VTK underneath the hood.
+    OpenCV = 0u
 };
 
 enum class VisualizationType {
-  kMesh2dTo3dSparse = 0,  // same as MESH2DTo3D but filters out triangles
-                          // corresponding to non planar obstacles
-  kPointcloud = 1,        // visualize 3D VIO points  (no repeated point)
-  kNone = 2               // does not visualize map
+    kMesh2dTo3dSparse = 0,  // same as MESH2DTo3D but filters out triangles
+                            // corresponding to non planar obstacles
+    kPointcloud = 1,        // visualize 3D VIO points  (no repeated point)
+    kNone       = 2         // does not visualize map
 };
 
 typedef std::unique_ptr<cv::viz::Widget3D> WidgetPtr;
-typedef std::map<std::string, WidgetPtr> WidgetsMap;
-typedef std::vector<std::string> WidgetIds;
+typedef std::map<std::string, WidgetPtr>   WidgetsMap;
+typedef std::vector<std::string>           WidgetIds;
 
-struct ImageToDisplay {
-  ImageToDisplay() = default;
-  ImageToDisplay(const std::string& name, const cv::Mat& image)
-      : name_(name), image_(image) {}
+struct ImageToDisplay
+{
+    ImageToDisplay() = default;
+    ImageToDisplay(const std::string& name, const cv::Mat& image)
+        : name_(name), image_(image)
+    {
+    }
 
-  std::string name_;
-  cv::Mat image_;
+    std::string name_;
+    cv::Mat     image_;
 };
 
-struct DisplayInputBase {
-  KIMERA_POINTER_TYPEDEFS(DisplayInputBase);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(DisplayInputBase);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  DisplayInputBase() = default;
-  virtual ~DisplayInputBase() = default;
+struct DisplayInputBase
+{
+    KIMERA_POINTER_TYPEDEFS(DisplayInputBase);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(DisplayInputBase);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    DisplayInputBase()          = default;
+    virtual ~DisplayInputBase() = default;
 
-  Timestamp timestamp_;
-  std::vector<ImageToDisplay> images_to_display_;
+    Timestamp                   timestamp_;
+    std::vector<ImageToDisplay> images_to_display_;
 };
 typedef ThreadsafeQueue<DisplayInputBase::UniquePtr> DisplayQueue;
 
-struct VisualizerInput : public PipelinePayload {
-  KIMERA_POINTER_TYPEDEFS(VisualizerInput);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(VisualizerInput);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  VisualizerInput(const Timestamp& timestamp,
-                  const MesherOutput::Ptr& mesher_output,
-                  const BackendOutput::Ptr& backend_output,
-                  const FrontendOutputPacketBase::Ptr& frontend_output,
-                  const LcdOutput::Ptr& lcd_output)
-      : PipelinePayload(timestamp),
-        mesher_output_(mesher_output),
-        backend_output_(backend_output),
-        frontend_output_(frontend_output),
-        lcd_output_(lcd_output) {
-    if (backend_output) CHECK_EQ(timestamp, backend_output->timestamp_);
-    if (frontend_output) CHECK_EQ(timestamp, frontend_output->timestamp_);
-    if (mesher_output) CHECK_EQ(timestamp, mesher_output->timestamp_);
-    if (lcd_output) CHECK_EQ(timestamp, lcd_output->timestamp_);
-  }
-  virtual ~VisualizerInput() = default;
+struct VisualizerInput : public PipelinePayload
+{
+    KIMERA_POINTER_TYPEDEFS(VisualizerInput);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(VisualizerInput);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    VisualizerInput(const Timestamp&                     timestamp,
+                    const MesherOutput::Ptr&             mesher_output,
+                    const BackendOutput::Ptr&            backend_output,
+                    const FrontendOutputPacketBase::Ptr& frontend_output,
+                    const LcdOutput::Ptr&                lcd_output)
+        : PipelinePayload(timestamp), mesher_output_(mesher_output),
+          backend_output_(backend_output), frontend_output_(frontend_output),
+          lcd_output_(lcd_output)
+    {
+        if (backend_output)
+            CHECK_EQ(timestamp, backend_output->timestamp_);
+        if (frontend_output)
+            CHECK_EQ(timestamp, frontend_output->timestamp_);
+        if (mesher_output)
+            CHECK_EQ(timestamp, mesher_output->timestamp_);
+        if (lcd_output)
+            CHECK_EQ(timestamp, lcd_output->timestamp_);
+    }
+    virtual ~VisualizerInput() = default;
 
-  // Copy the pointers so that we do not need to copy the data.
-  const MesherOutput::ConstPtr mesher_output_;
-  const BackendOutput::ConstPtr backend_output_;
-  const FrontendOutputPacketBase::Ptr frontend_output_;  // not ConstPtr because polymorphic
-  const LcdOutput::ConstPtr lcd_output_;
+    // Copy the pointers so that we do not need to copy the data.
+    const MesherOutput::ConstPtr  mesher_output_;
+    const BackendOutput::ConstPtr backend_output_;
+    const FrontendOutputPacketBase::Ptr
+        frontend_output_;  // not ConstPtr because polymorphic
+    const LcdOutput::ConstPtr lcd_output_;
 };
 
-struct VisualizerOutput : public DisplayInputBase {
-  KIMERA_POINTER_TYPEDEFS(VisualizerOutput);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(VisualizerOutput);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  VisualizerOutput()
-      : DisplayInputBase(),
-        visualization_type_(VisualizationType::kNone),
-        widgets_(),
-        widget_ids_to_remove_(),
-        frustum_pose_(cv::Affine3d::Identity()) {}
-  ~VisualizerOutput() = default;
+struct VisualizerOutput : public DisplayInputBase
+{
+    KIMERA_POINTER_TYPEDEFS(VisualizerOutput);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(VisualizerOutput);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    VisualizerOutput()
+        : DisplayInputBase(), visualization_type_(VisualizationType::kNone),
+          widgets_(), widget_ids_to_remove_(),
+          frustum_pose_(cv::Affine3d::Identity())
+    {
+    }
+    ~VisualizerOutput() = default;
 
-  VisualizationType visualization_type_;
-  WidgetsMap widgets_;
-  WidgetIds widget_ids_to_remove_;
-  cv::Affine3d frustum_pose_;
+    VisualizationType visualization_type_;
+    WidgetsMap        widgets_;
+    WidgetIds         widget_ids_to_remove_;
+    cv::Affine3d      frustum_pose_;
 };
 
 }  // namespace VIO

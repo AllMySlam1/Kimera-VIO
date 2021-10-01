@@ -25,33 +25,34 @@
 namespace VIO {
 
 class OpenCv3dDisplayParams : public DisplayParams {
- public:
-  KIMERA_POINTER_TYPEDEFS(OpenCv3dDisplayParams);
-  OpenCv3dDisplayParams();
-  ~OpenCv3dDisplayParams() override = default;
+  public:
+    KIMERA_POINTER_TYPEDEFS(OpenCv3dDisplayParams);
+    OpenCv3dDisplayParams();
+    ~OpenCv3dDisplayParams() override = default;
 
-  // Parse YAML file describing camera parameters.
-  bool parseYAML(const std::string& filepath) override;
+    // Parse YAML file describing camera parameters.
+    bool parseYAML(const std::string& filepath) override;
 
-  // Display all params.
-  void print() const override;
+    // Display all params.
+    void print() const override;
 
-  // Assert equality up to a tolerance.
-  bool equals(const OpenCv3dDisplayParams& cam_par,
-              const double& tol = 1e-9) const;
+    // Assert equality up to a tolerance.
+    bool equals(const OpenCv3dDisplayParams& cam_par,
+                const double&                tol = 1e-9) const;
 
- protected:
-  inline bool equals(const DisplayParams& rhs,
-                     const double& tol = 1e-9) const override {
-    return equals(static_cast<const OpenCv3dDisplayParams&>(rhs), tol);
-  }
+  protected:
+    inline bool equals(const DisplayParams& rhs,
+                       const double&        tol = 1e-9) const override
+    {
+        return equals(static_cast<const OpenCv3dDisplayParams&>(rhs), tol);
+    }
 
- public:
-  //! Spins the 3D window or 2D image display indefinitely, until user closes
-  //! the window.
-  bool hold_3d_display_ = false;
-  bool hold_2d_display_ = false;
-  cv::viz::Color background_color_ = cv::viz::Color::black();
+  public:
+    //! Spins the 3D window or 2D image display indefinitely, until user closes
+    //! the window.
+    bool           hold_3d_display_  = false;
+    bool           hold_2d_display_  = false;
+    cv::viz::Color background_color_ = cv::viz::Color::black();
 };
 
 }  // namespace VIO

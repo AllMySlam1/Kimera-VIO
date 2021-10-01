@@ -16,20 +16,20 @@
 namespace VIO {
 
 class RgbdImuSyncPacket : public FrontendInputPacketBase {
- public:
-  KIMERA_POINTER_TYPEDEFS(RgbdImuSyncPacket);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(RgbdImuSyncPacket);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  RgbdImuSyncPacket(const Timestamp& timestamp,
-                    RgbdFrame::UniquePtr rgbd_frame,
-                    const ImuStampS& imu_stamps,
-                    const ImuAccGyrS& imu_accgyr);
-  virtual ~RgbdImuSyncPacket() = default;
+  public:
+    KIMERA_POINTER_TYPEDEFS(RgbdImuSyncPacket);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(RgbdImuSyncPacket);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    RgbdImuSyncPacket(const Timestamp&     timestamp,
+                      RgbdFrame::UniquePtr rgbd_frame,
+                      const ImuStampS&     imu_stamps,
+                      const ImuAccGyrS&    imu_accgyr);
+    virtual ~RgbdImuSyncPacket() = default;
 
-  void print() const;
+    void print() const;
 
- public:
-  RgbdFrame::UniquePtr rgbd_frame_;
+  public:
+    RgbdFrame::UniquePtr rgbd_frame_;
 };
 
 }  // namespace VIO

@@ -21,8 +21,8 @@
 
 #include "kimera-vio/frontend/FrontendInputPacketBase.h"
 #include "kimera-vio/frontend/FrontendOutputPacketBase.h"
-#include "kimera-vio/frontend/feature-detector/FeatureDetector.h"
 #include "kimera-vio/frontend/Tracker.h"
+#include "kimera-vio/frontend/feature-detector/FeatureDetector.h"
 #include "kimera-vio/imu-frontend/ImuFrontend-definitions.h"
 #include "kimera-vio/imu-frontend/ImuFrontend.h"
 #include "kimera-vio/imu-frontend/ImuFrontendParams.h"
@@ -41,125 +41,141 @@ DECLARE_bool(log_stereo_matching_images);
 namespace VIO {
 
 class VisionImuFrontend {
- public:
-  KIMERA_POINTER_TYPEDEFS(VisionImuFrontend);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(VisionImuFrontend);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  
- public:
-  VisionImuFrontend(const ImuParams& imu_params,
-                 const ImuBias& imu_initial_bias,
-                 DisplayQueue* display_queue,
-                 bool log_output);
+  public:
+    KIMERA_POINTER_TYPEDEFS(VisionImuFrontend);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(VisionImuFrontend);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  virtual ~VisionImuFrontend();
+  public:
+    VisionImuFrontend(const ImuParams& imu_params,
+                      const ImuBias&   imu_initial_bias,
+                      DisplayQueue*    display_queue,
+                      bool             log_output);
 
- public:
-  FrontendOutputPacketBase::UniquePtr spinOnce(
-      FrontendInputPacketBase::UniquePtr&& input);
+    virtual ~VisionImuFrontend();
 
-  /* ------------------------------------------------------------------------ */
-  // Update Imu Bias. This is thread-safe as imu_frontend_->updateBias is
-  // thread-safe.
-  inline void updateImuBias(const ImuBias& imu_bias) const {
-    imu_frontend_->updateBias(imu_bias);
-  }
+  public:
+    FrontendOutputPacketBase::UniquePtr
+    spinOnce(FrontendInputPacketBase::UniquePtr&& input);
 
-  /* ------------------------------------------------------------------------ */
-  /**
-   * @brief isInitialized Returns whether the Frontend is initializing.
-   * Needs to be Thread-Safe! Therefore, frontend_state_ is atomic.
-   */
-  inline bool isInitialized() const {
-    return frontend_state_ != FrontendState::Bootstrap;
-  }
+    /* ------------------------------------------------------------------------
+     */
+    // Update Imu Bias. This is thread-safe as imu_frontend_->updateBias is
+    // thread-safe.
+    inline void updateImuBias(const ImuBias& imu_bias) const
+    {
+        imu_frontend_->updateBias(imu_bias);
+    }
 
-  /* ------------------------------------------------------------------------ */
-  // Get Imu Bias. This is thread-safe as imu_frontend_->getCurrentImuBias is
-  // thread-safe.
-  inline ImuBias getCurrentImuBias() const {
-    return imu_frontend_->getCurrentImuBias();
-  }
+    /* ------------------------------------------------------------------------
+     */
+    /**
+     * @brief isInitialized Returns whether the Frontend is initializing.
+     * Needs to be Thread-Safe! Therefore, frontend_state_ is atomic.
+     */
+    inline bool isInitialized() const
+    {
+        return frontend_state_ != FrontendState::Bootstrap;
+    }
 
-  /* ------------------------------------------------------------------------ */
-  // Update Imu Bias and reset pre-integration during initialization.
-  // This is not thread-safe! (no multi-thread during initialization)
-  inline void updateAndResetImuBias(const ImuBias& imu_bias) const {
-    imu_frontend_->updateBias(imu_bias);
-    imu_frontend_->resetIntegrationWithCachedBias();
-  }
+    /* ------------------------------------------------------------------------
+     */
+    // Get Imu Bias. This is thread-safe as imu_frontend_->getCurrentImuBias is
+    // thread-safe.
+    inline ImuBias getCurrentImuBias() const
+    {
+        return imu_frontend_->getCurrentImuBias();
+    }
 
-  /* ------------------------------------------------------------------------ */
-  // Get IMU Params for IMU Frontend.
-  inline gtsam::PreintegratedImuMeasurements::Params getImuFrontendParams() {
-    return imu_frontend_->getGtsamImuParams();
-  }
+    /* ------------------------------------------------------------------------
+     */
+    // Update Imu Bias and reset pre-integration during initialization.
+    // This is not thread-safe! (no multi-thread during initialization)
+    inline void updateAndResetImuBias(const ImuBias& imu_bias) const
+    {
+        imu_frontend_->updateBias(imu_bias);
+        imu_frontend_->resetIntegrationWithCachedBias();
+    }
 
-  /* ------------------------------------------------------------------------ */
-  static void printTrackingStatus(const TrackingStatus& status,
-                                  const std::string& type);
+    /* ------------------------------------------------------------------------
+     */
+    // Get IMU Params for IMU Frontend.
+    inline gtsam::PreintegratedImuMeasurements::Params getImuFrontendParams()
+    {
+        return imu_frontend_->getGtsamImuParams();
+    }
 
-  /* ------------------------------------------------------------------------ */
-  // Get tracker info.
-  inline DebugTrackerInfo getTrackerInfo() const {
-    return tracker_->debug_info_;
-  }
+    /* ------------------------------------------------------------------------
+     */
+    static void printTrackingStatus(const TrackingStatus& status,
+                                    const std::string&    type);
 
- protected:
-  virtual FrontendOutputPacketBase::UniquePtr
-      bootstrapSpin(FrontendInputPacketBase::UniquePtr&& input) = 0;
+    /* ------------------------------------------------------------------------
+     */
+    // Get tracker info.
+    inline DebugTrackerInfo getTrackerInfo() const
+    {
+        return tracker_->debug_info_;
+    }
 
-  virtual FrontendOutputPacketBase::UniquePtr
-      nominalSpin(FrontendInputPacketBase::UniquePtr&& input) = 0;
+  protected:
+    virtual FrontendOutputPacketBase::UniquePtr
+    bootstrapSpin(FrontendInputPacketBase::UniquePtr&& input) = 0;
 
-  /* ------------------------------------------------------------------------ */
-  // Reset ImuFrontend gravity. Trivial gravity is needed for initial alignment.
-  // This is thread-safe as imu_frontend_->resetPreintegrationGravity is
-  // thread-safe.
-  inline void resetGravity(const gtsam::Vector3& reset_value) const {
-    imu_frontend_->resetPreintegrationGravity(reset_value);
-  }
+    virtual FrontendOutputPacketBase::UniquePtr
+    nominalSpin(FrontendInputPacketBase::UniquePtr&& input) = 0;
 
-  /* ------------------------------------------------------------------------ */
-  // Get ImuFrontend gravity.
-  // This is thread-safe as imu_frontend_->getPreintegrationGravity is
-  // thread-safe.
-  inline gtsam::Vector3 getGravity() const {
-    return imu_frontend_->getPreintegrationGravity();
-  }
+    /* ------------------------------------------------------------------------
+     */
+    // Reset ImuFrontend gravity. Trivial gravity is needed for initial
+    // alignment. This is thread-safe as
+    // imu_frontend_->resetPreintegrationGravity is thread-safe.
+    inline void resetGravity(const gtsam::Vector3& reset_value) const
+    {
+        imu_frontend_->resetPreintegrationGravity(reset_value);
+    }
 
-  void outlierRejectionMono(
-      const gtsam::Rot3& keyframe_R_cur_frame,
-      Frame* frame_lkf,
-      Frame* frame_k,
-      TrackingStatusPose* status_pose_mono);
+    /* ------------------------------------------------------------------------
+     */
+    // Get ImuFrontend gravity.
+    // This is thread-safe as imu_frontend_->getPreintegrationGravity is
+    // thread-safe.
+    inline gtsam::Vector3 getGravity() const
+    {
+        return imu_frontend_->getPreintegrationGravity();
+    }
 
- protected:
-  enum class FrontendState {
-    Bootstrap = 0u,  //! Initialize Frontend
-    Nominal = 1u     //! Run Frontend
-  };
-  std::atomic<FrontendState> frontend_state_;
+    void outlierRejectionMono(const gtsam::Rot3&  keyframe_R_cur_frame,
+                              Frame*              frame_lkf,
+                              Frame*              frame_k,
+                              TrackingStatusPose* status_pose_mono);
 
-  // Counters.
-  int frame_count_;
-  int keyframe_count_;
+  protected:
+    enum class FrontendState {
+        Bootstrap = 0u,  //! Initialize Frontend
+        Nominal   = 1u   //! Run Frontend
+    };
+    std::atomic<FrontendState> frontend_state_;
 
-  // Timestamp of last keyframe.
-  Timestamp last_keyframe_timestamp_;
+    // Counters.
+    int frame_count_;
+    int keyframe_count_;
 
-  // IMU Frontend.
-  ImuFrontend::UniquePtr imu_frontend_;
+    // Timestamp of last keyframe.
+    Timestamp last_keyframe_timestamp_;
 
-  // Tracker
-  Tracker::UniquePtr tracker_;
-  TrackerStatusSummary tracker_status_summary_;
+    // IMU Frontend.
+    ImuFrontend::UniquePtr imu_frontend_;
 
-  // Display queue
-  DisplayQueue* display_queue_;
+    // Tracker
+    Tracker::UniquePtr   tracker_;
+    TrackerStatusSummary tracker_status_summary_;
 
-  // Logger
-  FrontendLogger::UniquePtr logger_;
+    // Display queue
+    DisplayQueue* display_queue_;
+
+    // Logger
+    FrontendLogger::UniquePtr logger_;
 };
 
 }  // namespace VIO

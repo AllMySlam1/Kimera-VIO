@@ -21,20 +21,20 @@
 namespace VIO {
 
 class MonoImuPipeline : public Pipeline {
- public:
-  KIMERA_POINTER_TYPEDEFS(MonoImuPipeline);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(MonoImuPipeline);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  public:
+    KIMERA_POINTER_TYPEDEFS(MonoImuPipeline);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(MonoImuPipeline);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
- public:
-  MonoImuPipeline(const VioParams& params,
-               Visualizer3D::UniquePtr&& visualizer = nullptr,
-               DisplayBase::UniquePtr&& displayer = nullptr);
+  public:
+    MonoImuPipeline(const VioParams&          params,
+                    Visualizer3D::UniquePtr&& visualizer = nullptr,
+                    DisplayBase::UniquePtr&&  displayer  = nullptr);
 
-  ~MonoImuPipeline() = default;
+    ~MonoImuPipeline() = default;
 
- protected:
-  Camera::ConstPtr camera_;
+  protected:
+    Camera::ConstPtr camera_;
 };
 
 }  // namespace VIO

@@ -36,16 +36,16 @@
 namespace VIO {
 
 enum class RegularBackendModality {
-  //! Only use structureless factors, equiv to normal Vio.
-  STRUCTURELESS = 0,
-  //! Converts all structureless factors to projection factors
-  PROJECTION = 1,
-  //! Projection factors used for regularities.
-  STRUCTURELESS_AND_PROJECTION = 2,
-  //! Projection Vio + regularity factors.
-  PROJECTION_AND_REGULARITY = 3,
-  //! All types of factors used.
-  STRUCTURELESS_PROJECTION_AND_REGULARITY = 4
+    //! Only use structureless factors, equiv to normal Vio.
+    STRUCTURELESS = 0,
+    //! Converts all structureless factors to projection factors
+    PROJECTION = 1,
+    //! Projection factors used for regularities.
+    STRUCTURELESS_AND_PROJECTION = 2,
+    //! Projection Vio + regularity factors.
+    PROJECTION_AND_REGULARITY = 3,
+    //! All types of factors used.
+    STRUCTURELESS_PROJECTION_AND_REGULARITY = 4
 };
 
 }  // namespace VIO

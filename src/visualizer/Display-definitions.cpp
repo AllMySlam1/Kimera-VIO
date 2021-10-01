@@ -35,16 +35,18 @@ namespace VIO {
 WindowData::WindowData()
     : window_(cv::viz::Viz3d("3D Visualizer")),
       mesh_representation_(FLAGS_mesh_representation),
-      mesh_shading_(FLAGS_mesh_shading),
-      mesh_ambient_(FLAGS_set_mesh_ambient),
-      mesh_lighting_(FLAGS_set_mesh_lighting) {}
+      mesh_shading_(FLAGS_mesh_shading), mesh_ambient_(FLAGS_set_mesh_ambient),
+      mesh_lighting_(FLAGS_set_mesh_lighting)
+{
+}
 
-WindowData::~WindowData() {
-  // OpenCV 3d Viz has an issue that I can't resolve, it throws a segfault
-  // at the end of the program. Probably because of memory not released.
-  // See issues in opencv git:
-  // https://github.com/opencv/opencv/issues/11219 and many more...
-  window_.close();
+WindowData::~WindowData()
+{
+    // OpenCV 3d Viz has an issue that I can't resolve, it throws a segfault
+    // at the end of the program. Probably because of memory not released.
+    // See issues in opencv git:
+    // https://github.com/opencv/opencv/issues/11219 and many more...
+    window_.close();
 }
 
 }  // namespace VIO

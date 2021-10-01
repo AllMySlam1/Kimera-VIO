@@ -22,23 +22,23 @@
 namespace VIO {
 
 class DisplayBase {
- public:
-  KIMERA_POINTER_TYPEDEFS(DisplayBase);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(DisplayBase);
+  public:
+    KIMERA_POINTER_TYPEDEFS(DisplayBase);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(DisplayBase);
 
-  DisplayBase(const DisplayType& display_type);
-  virtual ~DisplayBase() = default;
+    DisplayBase(const DisplayType& display_type);
+    virtual ~DisplayBase() = default;
 
- public:
-  /**
-   * @brief spinOnce
-   * Spins the display once to render the visualizer output.
-   * @param viz_output Visualizer output, which is the display input.
-   */
-  virtual void spinOnce(DisplayInputBase::UniquePtr&& viz_output) = 0;
+  public:
+    /**
+     * @brief spinOnce
+     * Spins the display once to render the visualizer output.
+     * @param viz_output Visualizer output, which is the display input.
+     */
+    virtual void spinOnce(DisplayInputBase::UniquePtr&& viz_output) = 0;
 
- public:
-  DisplayType display_type_;
+  public:
+    DisplayType display_type_;
 };
 
 }  // namespace VIO

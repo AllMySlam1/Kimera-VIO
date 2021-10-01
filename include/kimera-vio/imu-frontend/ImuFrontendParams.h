@@ -22,35 +22,36 @@
 
 namespace VIO {
 
-struct ImuParams : public PipelineParams {
- public:
-  KIMERA_POINTER_TYPEDEFS(ImuParams);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+struct ImuParams : public PipelineParams
+{
+  public:
+    KIMERA_POINTER_TYPEDEFS(ImuParams);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  ImuParams();
-  virtual ~ImuParams() = default;
+    ImuParams();
+    virtual ~ImuParams() = default;
 
- public:
-  bool parseYAML(const std::string& filepath) override;
-  void print() const override;
+  public:
+    bool parseYAML(const std::string& filepath) override;
+    void print() const override;
 
-protected:
-  bool equals(const PipelineParams& obj) const override;
+  protected:
+    bool equals(const PipelineParams& obj) const override;
 
- public:
-  ImuPreintegrationType imu_preintegration_type_ =
-      ImuPreintegrationType::kPreintegratedCombinedMeasurements;
+  public:
+    ImuPreintegrationType imu_preintegration_type_ =
+        ImuPreintegrationType::kPreintegratedCombinedMeasurements;
 
-  double gyro_noise_density_ = 0.0;
-  double gyro_random_walk_ = 0.0;
-  double acc_noise_density_ = 0.0;
-  double acc_random_walk_ = 0.0;
-  double imu_time_shift_ = 0.0;  // Defined as t_imu = t_cam + imu_shift
+    double gyro_noise_density_ = 0.0;
+    double gyro_random_walk_   = 0.0;
+    double acc_noise_density_  = 0.0;
+    double acc_random_walk_    = 0.0;
+    double imu_time_shift_     = 0.0;  // Defined as t_imu = t_cam + imu_shift
 
-  double nominal_sampling_time_s_ = 0.0;
-  double imu_integration_sigma_ = 0.0;
+    double nominal_sampling_time_s_ = 0.0;
+    double imu_integration_sigma_   = 0.0;
 
-  gtsam::Vector3 n_gravity_ = gtsam::Vector3::Zero();
+    gtsam::Vector3 n_gravity_ = gtsam::Vector3::Zero();
 };
 
 }  // namespace VIO

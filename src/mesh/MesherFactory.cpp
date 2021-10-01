@@ -19,18 +19,19 @@ DEFINE_bool(serialize_mesh_2d3d, false, "Serialize 2D/3D Mesh to file.");
 
 namespace VIO {
 
-Mesher::UniquePtr MesherFactory::createMesher(
-    const MesherType& mesher_type,
-    const MesherParams& mesher_params) {
-  switch (mesher_type) {
-    case MesherType::PROJECTIVE: {
-      return VIO::make_unique<Mesher>(mesher_params, FLAGS_serialize_mesh_2d3d);
+Mesher::UniquePtr MesherFactory::createMesher(const MesherType&   mesher_type,
+                                              const MesherParams& mesher_params)
+{
+    switch (mesher_type) {
+        case MesherType::PROJECTIVE: {
+            return VIO::make_unique<Mesher>(mesher_params,
+                                            FLAGS_serialize_mesh_2d3d);
+        }
+        default: {
+            LOG(FATAL) << "Requested mesher type is not supported.\n"
+                       << static_cast<int>(mesher_type);
+        }
     }
-    default: {
-      LOG(FATAL) << "Requested mesher type is not supported.\n"
-                 << static_cast<int>(mesher_type);
-    }
-  }
 }
 
 }  // namespace VIO

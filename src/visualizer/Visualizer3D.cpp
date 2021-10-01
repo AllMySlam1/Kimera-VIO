@@ -17,6 +17,8 @@
 namespace VIO {
 
 Visualizer3D::Visualizer3D(const VisualizationType& viz_type)
-    : visualization_type_(viz_type) {}
+    : visualization_type_(viz_type)
+{
+}
 
 }  // namespace VIO

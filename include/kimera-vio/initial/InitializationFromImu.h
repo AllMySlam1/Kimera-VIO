@@ -32,29 +32,30 @@ namespace VIO {
  *  - Guesses IMU bias **assuming upright vehicle**.
  */
 class InitializationFromImu {
- public:
-  InitializationFromImu() = default;
-  ~InitializationFromImu() = default;
+  public:
+    InitializationFromImu()  = default;
+    ~InitializationFromImu() = default;
 
- public:
-  static VioNavState getInitialStateEstimate(
-      const ImuAccGyrS& imu_accgyr,
-      const gtsam::Vector3& global_gravity,
-      const bool& round);
+  public:
+    static VioNavState
+    getInitialStateEstimate(const ImuAccGyrS&     imu_accgyr,
+                            const gtsam::Vector3& global_gravity,
+                            const bool&           round);
 
- private:
-  static inline ImuAccGyr computeAverageImuMeasurements(
-      const ImuAccGyrS& imu_accgyr) {
-    return imu_accgyr.rowwise().mean();
-  }
+  private:
+    static inline ImuAccGyr
+    computeAverageImuMeasurements(const ImuAccGyrS& imu_accgyr)
+    {
+        return imu_accgyr.rowwise().mean();
+    }
 
-  static gtsam::Pose3 guessPoseFromImuMeasurements(
-      const ImuAcc& mean_acc,
-      const gtsam::Vector3& global_gravity,
-      const bool& round);
+    static gtsam::Pose3
+    guessPoseFromImuMeasurements(const ImuAcc&         mean_acc,
+                                 const gtsam::Vector3& global_gravity,
+                                 const bool&           round);
 
-  static ImuBias guessImuBias(const ImuAccGyr& mean_accgyr,
-                              const gtsam::Vector3& local_gravity);
+    static ImuBias guessImuBias(const ImuAccGyr&      mean_accgyr,
+                                const gtsam::Vector3& local_gravity);
 };
 
 }  // namespace VIO

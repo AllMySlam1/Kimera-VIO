@@ -16,27 +16,36 @@
 
 #pragma once
 
-#include "kimera-vio/frontend/FrontendInputPacketBase.h"
 #include "kimera-vio/frontend/Frame.h"
+#include "kimera-vio/frontend/FrontendInputPacketBase.h"
 namespace VIO {
 
 class MonoImuSyncPacket : public FrontendInputPacketBase {
- public:
-  KIMERA_POINTER_TYPEDEFS(MonoImuSyncPacket);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(MonoImuSyncPacket);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  MonoImuSyncPacket() = delete;
-  MonoImuSyncPacket(Frame::UniquePtr frame,
-                    const ImuStampS& imu_stamps,
-                    const ImuAccGyrS& imu_accgyrs);
-  virtual ~MonoImuSyncPacket() = default;
+  public:
+    KIMERA_POINTER_TYPEDEFS(MonoImuSyncPacket);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(MonoImuSyncPacket);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    MonoImuSyncPacket() = delete;
+    MonoImuSyncPacket(Frame::UniquePtr  frame,
+                      const ImuStampS&  imu_stamps,
+                      const ImuAccGyrS& imu_accgyrs);
+    virtual ~MonoImuSyncPacket() = default;
 
-  inline const Frame& getFrame() const { return *frame_; }
-  inline const ImuStampS& getImuStamps() const { return imu_stamps_; }
-  inline const ImuAccGyrS& getImuAccGyrs() const { return imu_accgyrs_; }
-  void print() const;
+    inline const Frame& getFrame() const
+    {
+        return *frame_;
+    }
+    inline const ImuStampS& getImuStamps() const
+    {
+        return imu_stamps_;
+    }
+    inline const ImuAccGyrS& getImuAccGyrs() const
+    {
+        return imu_accgyrs_;
+    }
+    void print() const;
 
-  Frame::UniquePtr frame_;
+    Frame::UniquePtr frame_;
 };
 
 }  // namespace VIO

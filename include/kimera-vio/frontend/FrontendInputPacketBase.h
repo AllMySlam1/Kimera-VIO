@@ -17,34 +17,34 @@
 #include "kimera-vio/backend/VioBackend-definitions.h"
 #include "kimera-vio/frontend/Tracker-definitions.h"
 #include "kimera-vio/imu-frontend/ImuFrontend-definitions.h"
-#include "kimera-vio/utils/Macros.h"
 #include "kimera-vio/pipeline/PipelinePayload.h"
+#include "kimera-vio/utils/Macros.h"
 
 namespace VIO {
 
 class FrontendInputPacketBase : public PipelinePayload {
- public:
-  KIMERA_POINTER_TYPEDEFS(FrontendInputPacketBase);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(FrontendInputPacketBase);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  public:
+    KIMERA_POINTER_TYPEDEFS(FrontendInputPacketBase);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(FrontendInputPacketBase);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  FrontendInputPacketBase() = delete;
+    FrontendInputPacketBase() = delete;
 
-  FrontendInputPacketBase(const Timestamp& timestamp,
-                          const ImuStampS& imu_stamps,
-                          const ImuAccGyrS& imu_accgyrs)
-      : PipelinePayload(timestamp),
-        imu_stamps_(imu_stamps),
-        imu_accgyrs_(imu_accgyrs) {
-    CHECK_GT(imu_stamps_.cols(), 0u);
-    CHECK_GT(imu_accgyrs_.cols(), 0u);
-    CHECK_EQ(imu_stamps_.cols(), imu_accgyrs_.cols());
-  }
+    FrontendInputPacketBase(const Timestamp&  timestamp,
+                            const ImuStampS&  imu_stamps,
+                            const ImuAccGyrS& imu_accgyrs)
+        : PipelinePayload(timestamp), imu_stamps_(imu_stamps),
+          imu_accgyrs_(imu_accgyrs)
+    {
+        CHECK_GT(imu_stamps_.cols(), 0u);
+        CHECK_GT(imu_accgyrs_.cols(), 0u);
+        CHECK_EQ(imu_stamps_.cols(), imu_accgyrs_.cols());
+    }
 
-  virtual ~FrontendInputPacketBase() = default;
+    virtual ~FrontendInputPacketBase() = default;
 
-  const ImuStampS imu_stamps_;
-  const ImuAccGyrS imu_accgyrs_;
+    const ImuStampS  imu_stamps_;
+    const ImuAccGyrS imu_accgyrs_;
 };
 
 }  // namespace VIO

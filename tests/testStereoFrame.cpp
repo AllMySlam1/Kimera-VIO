@@ -23,8 +23,8 @@
 #include <gtsam/geometry/StereoCamera.h>
 
 #include "kimera-vio/frontend/Frame.h"
-#include "kimera-vio/frontend/StereoFrame.h"
 #include "kimera-vio/frontend/StereoCamera.h"
+#include "kimera-vio/frontend/StereoFrame.h"
 #include "kimera-vio/frontend/StereoMatcher.h"
 #include "kimera-vio/frontend/VisionImuFrontendParams.h"
 #include "kimera-vio/utils/Timer.h"
@@ -36,133 +36,128 @@ using namespace std;
 using namespace VIO;
 
 // Data
-static const double tol = 1e-7;
-static const FrameId id = 0;
+static const double  tol       = 1e-7;
+static const FrameId id        = 0;
 static const int64_t timestamp = 1;
-static const string stereo_FLAGS_test_data_path(FLAGS_test_data_path +
+static const string  stereo_FLAGS_test_data_path(FLAGS_test_data_path +
                                                 string("/ForStereoFrame/"));
-static const string left_image_name = "left_img_0.png";
-static const string right_image_name = "right_img_0.png";
+static const string  left_image_name  = "left_img_0.png";
+static const string  right_image_name = "right_img_0.png";
 
 void initializeData() {}
 
 class StereoFrameFixture : public ::testing::Test {
- public:
-  StereoFrameFixture() : cam_params_left(), cam_params_right(), tp() {
-    cam_params_left.parseYAML(stereo_FLAGS_test_data_path + "/sensorLeft.yaml");
-    cam_params_right.parseYAML(stereo_FLAGS_test_data_path +
-                               "/sensorRight.yaml");
+  public:
+    StereoFrameFixture() : cam_params_left(), cam_params_right(), tp()
+    {
+        cam_params_left.parseYAML(stereo_FLAGS_test_data_path +
+                                  "/sensorLeft.yaml");
+        cam_params_right.parseYAML(stereo_FLAGS_test_data_path +
+                                   "/sensorRight.yaml");
 
-    // construct stereo camera
-    sf = std::make_shared<StereoFrame>(
-        id,
-        timestamp,
-        Frame(id,
-              timestamp,
-              cam_params_left,
-              UtilsOpenCV::ReadAndConvertToGrayScale(
-                  stereo_FLAGS_test_data_path + left_image_name,
-                  tp.stereo_matching_params_.equalize_image_)),
-        Frame(id,
-              timestamp,
-              cam_params_right,
-              UtilsOpenCV::ReadAndConvertToGrayScale(
-                  stereo_FLAGS_test_data_path + right_image_name,
-                  tp.stereo_matching_params_.equalize_image_)));
+        // construct stereo camera
+        sf = std::make_shared<StereoFrame>(
+            id, timestamp,
+            Frame(id, timestamp, cam_params_left,
+                  UtilsOpenCV::ReadAndConvertToGrayScale(
+                      stereo_FLAGS_test_data_path + left_image_name,
+                      tp.stereo_matching_params_.equalize_image_)),
+            Frame(id, timestamp, cam_params_right,
+                  UtilsOpenCV::ReadAndConvertToGrayScale(
+                      stereo_FLAGS_test_data_path + right_image_name,
+                      tp.stereo_matching_params_.equalize_image_)));
 
-    stereo_camera_ =
-        std::make_shared<VIO::StereoCamera>(cam_params_left, cam_params_right);
-    stereo_matcher_ = VIO::make_unique<StereoMatcher>(
-        stereo_camera_, tp.stereo_matching_params_);
+        stereo_camera_  = std::make_shared<VIO::StereoCamera>(cam_params_left,
+                                                             cam_params_right);
+        stereo_matcher_ = VIO::make_unique<StereoMatcher>(
+            stereo_camera_, tp.stereo_matching_params_);
 
-    // stereo_matcher_->sparseStereoReconstruction(sf.get());
-    // sf->getLeftImgRectified().copyTo(left_image_rectified);
-    // sf->getRightImgRectified().copyTo(right_image_rectified);
-    P1 = stereo_camera_->getP1();
-    P2 = stereo_camera_->getP2();
+        // stereo_matcher_->sparseStereoReconstruction(sf.get());
+        // sf->getLeftImgRectified().copyTo(left_image_rectified);
+        // sf->getRightImgRectified().copyTo(right_image_rectified);
+        P1 = stereo_camera_->getP1();
+        P2 = stereo_camera_->getP2();
 
-    initializeDataStereo();
-  }
-
- protected:
-  virtual void SetUp() {}
-  virtual void TearDown() {}
-
-  // Helper function
-  void initializeDataStereo() {
-    cam_params_left.parseYAML(stereo_FLAGS_test_data_path + 
-                              "/sensorLeft.yaml");
-    cam_params_right.parseYAML(stereo_FLAGS_test_data_path +
-                               "/sensorRight.yaml");
-
-    // construct stereo camera
-    FrontendParams tp;
-    sfnew = std::make_shared<StereoFrame>(
-        id,
-        timestamp,
-        Frame(id,
-              timestamp,
-              cam_params_left,
-              UtilsOpenCV::ReadAndConvertToGrayScale(
-                  stereo_FLAGS_test_data_path + left_image_name,
-                  tp.stereo_matching_params_.equalize_image_)),
-        Frame(id,
-              timestamp,
-              cam_params_right,
-              UtilsOpenCV::ReadAndConvertToGrayScale(
-                  stereo_FLAGS_test_data_path + right_image_name,
-                  tp.stereo_matching_params_.equalize_image_)));
-
-    Frame* left_frame = &sfnew->left_frame_;
-    UtilsOpenCV::ExtractCorners(left_frame->img_, &left_frame->keypoints_);
-    left_frame->versors_.reserve(sfnew->left_frame_.keypoints_.size());
-    int landmark_count_ = 0;
-    for (size_t i = 0; i < sfnew->left_frame_.keypoints_.size(); i++) {
-      sfnew->left_frame_.landmarks_.push_back(landmark_count_);
-      sfnew->left_frame_.landmarks_age_.push_back(
-          5 * landmark_count_);  // seen in a single (key)frame
-      sfnew->left_frame_.scores_.push_back(10 * landmark_count_);
-      sfnew->left_frame_.versors_.push_back(
-          UndistorterRectifier::UndistortKeypointAndGetVersor(
-              sfnew->left_frame_.keypoints_.at(i),
-              sfnew->left_frame_.cam_param_));
-      ++landmark_count_;
+        initializeDataStereo();
     }
 
-    // do sparse stereo
-    stereo_matcher_->sparseStereoReconstruction(sfnew.get());
-  }
+  protected:
+    virtual void SetUp() {}
+    virtual void TearDown() {}
 
-  FrontendParams tp;
-  CameraParams cam_params_left;
-  CameraParams cam_params_right;
-  VIO::StereoCamera::ConstPtr stereo_camera_;
-  VIO::StereoMatcher::UniquePtr stereo_matcher_;
-  StereoFrame::Ptr sf;
-  StereoFrame::Ptr sfnew;
-  cv::Mat left_image_rectified, right_image_rectified;
-  cv::Mat P1, P2;
+    // Helper function
+    void initializeDataStereo()
+    {
+        cam_params_left.parseYAML(stereo_FLAGS_test_data_path +
+                                  "/sensorLeft.yaml");
+        cam_params_right.parseYAML(stereo_FLAGS_test_data_path +
+                                   "/sensorRight.yaml");
+
+        // construct stereo camera
+        FrontendParams tp;
+        sfnew = std::make_shared<StereoFrame>(
+            id, timestamp,
+            Frame(id, timestamp, cam_params_left,
+                  UtilsOpenCV::ReadAndConvertToGrayScale(
+                      stereo_FLAGS_test_data_path + left_image_name,
+                      tp.stereo_matching_params_.equalize_image_)),
+            Frame(id, timestamp, cam_params_right,
+                  UtilsOpenCV::ReadAndConvertToGrayScale(
+                      stereo_FLAGS_test_data_path + right_image_name,
+                      tp.stereo_matching_params_.equalize_image_)));
+
+        Frame* left_frame = &sfnew->left_frame_;
+        UtilsOpenCV::ExtractCorners(left_frame->img_, &left_frame->keypoints_);
+        left_frame->versors_.reserve(sfnew->left_frame_.keypoints_.size());
+        int landmark_count_ = 0;
+        for (size_t i = 0; i < sfnew->left_frame_.keypoints_.size(); i++) {
+            sfnew->left_frame_.landmarks_.push_back(landmark_count_);
+            sfnew->left_frame_.landmarks_age_.push_back(
+                5 * landmark_count_);  // seen in a single (key)frame
+            sfnew->left_frame_.scores_.push_back(10 * landmark_count_);
+            sfnew->left_frame_.versors_.push_back(
+                UndistorterRectifier::UndistortKeypointAndGetVersor(
+                    sfnew->left_frame_.keypoints_.at(i),
+                    sfnew->left_frame_.cam_param_));
+            ++landmark_count_;
+        }
+
+        // do sparse stereo
+        stereo_matcher_->sparseStereoReconstruction(sfnew.get());
+    }
+
+    FrontendParams                tp;
+    CameraParams                  cam_params_left;
+    CameraParams                  cam_params_right;
+    VIO::StereoCamera::ConstPtr   stereo_camera_;
+    VIO::StereoMatcher::UniquePtr stereo_matcher_;
+    StereoFrame::Ptr              sf;
+    StereoFrame::Ptr              sfnew;
+    cv::Mat                       left_image_rectified, right_image_rectified;
+    cv::Mat                       P1, P2;
 };
 
-static cv::Mat cvTranslateImageX(cv::Mat img, double dist) {
-  cv::Mat result = cv::Mat(img.rows, img.cols, img.type());
-  cv::Mat translation_mat = cv::Mat::eye(3, 3, CV_64F);
-  translation_mat.at<double>(0, 2) = dist;
-  cv::warpPerspective(
-      img, result, translation_mat, img.size(), cv::INTER_NEAREST);
-  return result;
+static cv::Mat cvTranslateImageX(cv::Mat img, double dist)
+{
+    cv::Mat result                   = cv::Mat(img.rows, img.cols, img.type());
+    cv::Mat translation_mat          = cv::Mat::eye(3, 3, CV_64F);
+    translation_mat.at<double>(0, 2) = dist;
+    cv::warpPerspective(img, result, translation_mat, img.size(),
+                        cv::INTER_NEAREST);
+    return result;
 }
 
-TEST_F(StereoFrameFixture, setIsKeyframe) {
-  // all false by default
-  EXPECT_TRUE(!sf->isKeyframe());
-  EXPECT_TRUE(!sf->left_frame_.isKeyframe_);
-  EXPECT_TRUE(!sf->right_frame_.isKeyframe_);
-  // Check that are correctly changed to true.
-  sf->setIsKeyframe(true);
-  EXPECT_TRUE(sf->isKeyframe());
-  EXPECT_TRUE(sf->left_frame_.isKeyframe_);
-  EXPECT_TRUE(sf->right_frame_.isKeyframe_);
+TEST_F(StereoFrameFixture, setIsKeyframe)
+{
+    // all false by default
+    EXPECT_TRUE(!sf->isKeyframe());
+    EXPECT_TRUE(!sf->left_frame_.isKeyframe_);
+    EXPECT_TRUE(!sf->right_frame_.isKeyframe_);
+    // Check that are correctly changed to true.
+    sf->setIsKeyframe(true);
+    EXPECT_TRUE(sf->isKeyframe());
+    EXPECT_TRUE(sf->left_frame_.isKeyframe_);
+    EXPECT_TRUE(sf->right_frame_.isKeyframe_);
 }
 
 /* ************************************************************************* */
@@ -204,8 +199,9 @@ TEST_F(StereoFrameFixture, setIsKeyframe) {
 //   for (size_t i = 0; i < nrTests; i++) {
 //     matchTemplate(stripe, templ, result1, CV_TM_SQDIFF_NORMED);
 //   }
-//   double timeMatching1 = utils::Timer::toc<std::chrono::seconds>(tic).count();
-//   std::cout << "timeMatching 1: " << timeMatching1 / double(nrTests) << endl;
+//   double timeMatching1 =
+//   utils::Timer::toc<std::chrono::seconds>(tic).count(); std::cout <<
+//   "timeMatching 1: " << timeMatching1 / double(nrTests) << endl;
 
 //   ///////////////////////////////////////////////////////////////////////////////////////////////
 //   tic = utils::Timer::tic();
@@ -216,8 +212,9 @@ TEST_F(StereoFrameFixture, setIsKeyframe) {
 //   for (size_t t = 0; t < nrTests; t++) {
 //     UtilsOpenCV::PlainMatchTemplate(stripe, templ, result2);
 //   }
-//   double timeMatching2 = utils::Timer::toc<std::chrono::seconds>(tic).count();
-//   std::cout << "timeMatching 2: " << timeMatching2 / double(nrTests) << endl;
+//   double timeMatching2 =
+//   utils::Timer::toc<std::chrono::seconds>(tic).count(); std::cout <<
+//   "timeMatching 2: " << timeMatching2 / double(nrTests) << endl;
 
 //   // check that results are the same
 //   // cout << result1 << "\n" << result2 << endl;

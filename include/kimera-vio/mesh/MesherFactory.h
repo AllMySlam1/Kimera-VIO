@@ -21,13 +21,13 @@
 namespace VIO {
 
 class MesherFactory {
- public:
-  KIMERA_POINTER_TYPEDEFS(MesherFactory);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(MesherFactory);
-  MesherFactory() = delete;
-  virtual ~MesherFactory() = default;
-  static Mesher::UniquePtr createMesher(const MesherType& mesher_type,
-                                        const MesherParams& mesher_params);
+  public:
+    KIMERA_POINTER_TYPEDEFS(MesherFactory);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(MesherFactory);
+    MesherFactory()          = delete;
+    virtual ~MesherFactory() = default;
+    static Mesher::UniquePtr createMesher(const MesherType&   mesher_type,
+                                          const MesherParams& mesher_params);
 };
 
 }  // namespace VIO

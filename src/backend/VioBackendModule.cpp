@@ -17,30 +17,34 @@
 
 namespace VIO {
 
-VioBackendModule::VioBackendModule(InputQueue* input_queue,
-                                   bool parallel_run,
+VioBackendModule::VioBackendModule(InputQueue*           input_queue,
+                                   bool                  parallel_run,
                                    VioBackend::UniquePtr vio_backend)
     : SIMO(input_queue, "VioBackend", parallel_run),
-      vio_backend_(std::move(vio_backend)) {
-  CHECK(vio_backend_);
+      vio_backend_(std::move(vio_backend))
+{
+    CHECK(vio_backend_);
 }
 
-VioBackendModule::OutputUniquePtr VioBackendModule::spinOnce(
-    BackendInput::UniquePtr input) {
-  CHECK(input);
-  CHECK(vio_backend_);
-  OutputUniquePtr output = vio_backend_->spinOnce(*input);
-  if (!output) {
-    LOG(ERROR) << "Backend did not return an output: shutting down Backend.";
-    shutdown();
-  }
-  return output;
+VioBackendModule::OutputUniquePtr
+VioBackendModule::spinOnce(BackendInput::UniquePtr input)
+{
+    CHECK(input);
+    CHECK(vio_backend_);
+    OutputUniquePtr output = vio_backend_->spinOnce(*input);
+    if (!output) {
+        LOG(ERROR)
+            << "Backend did not return an output: shutting down Backend.";
+        shutdown();
+    }
+    return output;
 }
 
 void VioBackendModule::registerImuBiasUpdateCallback(
-    const VioBackend::ImuBiasCallback& imu_bias_update_callback) {
-  CHECK(vio_backend_);
-  vio_backend_->registerImuBiasUpdateCallback(imu_bias_update_callback);
+    const VioBackend::ImuBiasCallback& imu_bias_update_callback)
+{
+    CHECK(vio_backend_);
+    vio_backend_->registerImuBiasUpdateCallback(imu_bias_update_callback);
 }
 
 }  // namespace VIO

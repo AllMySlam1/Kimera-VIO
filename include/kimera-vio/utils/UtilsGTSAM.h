@@ -28,15 +28,16 @@ namespace VIO {
  * \return Whether the key could be found or not.
  */
 template <class T>
-static bool getEstimateOfKey(const gtsam::Values& state,
-                             const gtsam::Key& key,
-                             T* estimate) {
-  if (state.exists(key)) {
-    *CHECK_NOTNULL(estimate) = state.at<T>(key);
-    return true;
-  } else {
-    return false;
-  }
+static bool
+getEstimateOfKey(const gtsam::Values& state, const gtsam::Key& key, T* estimate)
+{
+    if (state.exists(key)) {
+        *CHECK_NOTNULL(estimate) = state.at<T>(key);
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 }  // namespace VIO

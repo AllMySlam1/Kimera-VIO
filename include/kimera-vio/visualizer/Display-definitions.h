@@ -25,22 +25,23 @@ namespace VIO {
  * @brief The WindowData struct: Contains internal data for Visualizer3D window.
  * This only applies to OpenCV displayers
  */
-struct WindowData {
- public:
-  WindowData();
-  ~WindowData();
+struct WindowData
+{
+  public:
+    WindowData();
+    ~WindowData();
 
- public:
-  //! 3D visualization
-  cv::viz::Viz3d window_;
+  public:
+    //! 3D visualization
+    cv::viz::Viz3d window_;
 
-  //! Stores the user set mesh representation.
-  //! These objects are further modified by callbacks in the display module
-  //! And are as well read by the visualizer module.
-  int mesh_representation_;
-  int mesh_shading_;
-  bool mesh_ambient_;
-  bool mesh_lighting_;
+    //! Stores the user set mesh representation.
+    //! These objects are further modified by callbacks in the display module
+    //! And are as well read by the visualizer module.
+    int  mesh_representation_;
+    int  mesh_shading_;
+    bool mesh_ambient_;
+    bool mesh_lighting_;
 };
 
 /**
@@ -50,21 +51,23 @@ struct WindowData {
  * @param display_queue Threadsafe queue were images will be pushed and that
  * needs to be consumed by a display thread.
  */
-inline void displayImage(const Timestamp& timestamp,
+inline void displayImage(const Timestamp&   timestamp,
                          const std::string& title,
-                         const cv::Mat& img,
-                         DisplayQueue* display_queue) {
-  DisplayInputBase::UniquePtr visualizer_output =
-      VIO::make_unique<DisplayInputBase>();
-  visualizer_output->timestamp_ = timestamp;
-  ImageToDisplay img_to_display(title, img);
-  visualizer_output->images_to_display_.push_back(img_to_display);
-  if (display_queue) {
-    display_queue->push(std::move(visualizer_output));
-  } else {
-    LOG(ERROR) << "Requested display image, but display_queue is "
-                  "not valid.";
-  }
+                         const cv::Mat&     img,
+                         DisplayQueue*      display_queue)
+{
+    DisplayInputBase::UniquePtr visualizer_output =
+        VIO::make_unique<DisplayInputBase>();
+    visualizer_output->timestamp_ = timestamp;
+    ImageToDisplay img_to_display(title, img);
+    visualizer_output->images_to_display_.push_back(img_to_display);
+    if (display_queue) {
+        display_queue->push(std::move(visualizer_output));
+    }
+    else {
+        LOG(ERROR) << "Requested display image, but display_queue is "
+                      "not valid.";
+    }
 }
 
 }  // namespace VIO

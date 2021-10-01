@@ -15,10 +15,10 @@
 
 #pragma once
 
-#include <stdlib.h>
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <stdlib.h>
 #include <string>
 #include <unordered_map>
 
@@ -33,50 +33,50 @@
 namespace VIO {
 
 class RegularVioBackendParams : public BackendParams {
- public:
-  KIMERA_POINTER_TYPEDEFS(RegularVioBackendParams);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  RegularVioBackendParams();
-  virtual ~RegularVioBackendParams() = default;
+  public:
+    KIMERA_POINTER_TYPEDEFS(RegularVioBackendParams);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    RegularVioBackendParams();
+    virtual ~RegularVioBackendParams() = default;
 
- public:
-  virtual bool parseYAML(const std::string& filepath) override;
+  public:
+    virtual bool parseYAML(const std::string& filepath) override;
 
-  virtual bool equals(const BackendParams& vp2,
-                      double tol = 1e-8) const override;
+    virtual bool equals(const BackendParams& vp2,
+                        double               tol = 1e-8) const override;
 
-  virtual void print() const override;
+    virtual void print() const override;
 
-  // Use this to safely cast VioBackendParams to RegularVioBackendParams.
-  static RegularVioBackendParams safeCast(const BackendParams& params);
+    // Use this to safely cast VioBackendParams to RegularVioBackendParams.
+    static RegularVioBackendParams safeCast(const BackendParams& params);
 
- protected:
-  // Parse params YAML file
-  bool parseYAMLRegularVioBackendParams(const YamlParser& yaml_parser);
+  protected:
+    // Parse params YAML file
+    bool parseYAMLRegularVioBackendParams(const YamlParser& yaml_parser);
 
-  bool equalsRegularVioBackendParams(const BackendParams& vp2,
-                                     double tol = 1e-8) const;
+    bool equalsRegularVioBackendParams(const BackendParams& vp2,
+                                       double               tol = 1e-8) const;
 
-  void printRegularVioBackendParams() const {}
+    void printRegularVioBackendParams() const {}
 
- public:
-  RegularBackendModality backend_modality_ =
-      RegularBackendModality::STRUCTURELESS_PROJECTION_AND_REGULARITY;
+  public:
+    RegularBackendModality backend_modality_ =
+        RegularBackendModality::STRUCTURELESS_PROJECTION_AND_REGULARITY;
 
-  double monoNoiseSigma_ = 3.0;
-  double stereoNoiseSigma_ = 3.0;
-  double regularityNoiseSigma_ = 0.1;
-  double monoNormParam_ = 0.0;
-  double stereoNormParam_ = 0.0;
-  double regularityNormParam_ = 4.6851;
+    double monoNoiseSigma_       = 3.0;
+    double stereoNoiseSigma_     = 3.0;
+    double regularityNoiseSigma_ = 0.1;
+    double monoNormParam_        = 0.0;
+    double stereoNormParam_      = 0.0;
+    double regularityNormParam_  = 4.6851;
 
-  // NomrType -> 0: L2 norm, 1: Huber, 2: Tukey.
-  int monoNormType_ = 0;
-  int stereoNormType_ = 0;
-  int regularityNormType_ = 2;
+    // NomrType -> 0: L2 norm, 1: Huber, 2: Tukey.
+    int monoNormType_       = 0;
+    int stereoNormType_     = 0;
+    int regularityNormType_ = 2;
 
-  double huberParam_ = 1.345;
-  double tukeyParam_ = 4.6851;
+    double huberParam_ = 1.345;
+    double tukeyParam_ = 4.6851;
 };
 
 }  // namespace VIO

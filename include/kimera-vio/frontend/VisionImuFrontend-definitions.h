@@ -17,12 +17,12 @@
 namespace VIO {
 
 enum class FrontendType {
-  //! Frontend that works with Mono camera and Imu
-  kMonoImu = 0,
-  //! Frontend that works with Stereo camera and Imu
-  kStereoImu = 1,
-  //! Frontend that works with RGB + Depth camera and Imu
-  kRgbdImu = 2
+    //! Frontend that works with Mono camera and Imu
+    kMonoImu = 0,
+    //! Frontend that works with Stereo camera and Imu
+    kStereoImu = 1,
+    //! Frontend that works with RGB + Depth camera and Imu
+    kRgbdImu = 2
 };
 
 }  // namespace VIO

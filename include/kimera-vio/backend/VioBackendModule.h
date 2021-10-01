@@ -26,49 +26,52 @@ namespace VIO {
 
 class VioBackendModule
     : public SIMOPipelineModule<BackendInput, BackendOutput> {
- public:
-  KIMERA_DELETE_COPY_CONSTRUCTORS(VioBackendModule);
-  KIMERA_POINTER_TYPEDEFS(VioBackendModule);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  public:
+    KIMERA_DELETE_COPY_CONSTRUCTORS(VioBackendModule);
+    KIMERA_POINTER_TYPEDEFS(VioBackendModule);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  using SIMO = SIMOPipelineModule<BackendInput, BackendOutput>;
-  using InputQueue = ThreadsafeQueue<typename PIO::InputUniquePtr>;
+    using SIMO       = SIMOPipelineModule<BackendInput, BackendOutput>;
+    using InputQueue = ThreadsafeQueue<typename PIO::InputUniquePtr>;
 
-  /**
-   * @brief VioBackendModule
-   * @param input_queue
-   * @param output_queue
-   * @param parallel_run
-   * @param vio_backend
-   */
-  VioBackendModule(InputQueue* input_queue,
-                   bool parallel_run,
-                   VioBackend::UniquePtr vio_backend);
-  virtual ~VioBackendModule() = default;
+    /**
+     * @brief VioBackendModule
+     * @param input_queue
+     * @param output_queue
+     * @param parallel_run
+     * @param vio_backend
+     */
+    VioBackendModule(InputQueue*           input_queue,
+                     bool                  parallel_run,
+                     VioBackend::UniquePtr vio_backend);
+    virtual ~VioBackendModule() = default;
 
-  /**
-   * @brief spinOnce
-   * @param input
-   * @return
-   */
-  virtual OutputUniquePtr spinOnce(BackendInput::UniquePtr input);
+    /**
+     * @brief spinOnce
+     * @param input
+     * @return
+     */
+    virtual OutputUniquePtr spinOnce(BackendInput::UniquePtr input);
 
- public:
-  inline bool isInitialized() const { return vio_backend_->isInitialized(); }
+  public:
+    inline bool isInitialized() const
+    {
+        return vio_backend_->isInitialized();
+    }
 
-  /**
-   * @brief registerImuBiasUpdateCallback Register callback to be called
-   * whenever the Backend has a new estimate of the IMU bias.
-   * The Frontend needs to register this function for
-   * the IMU preintegration to be done wrt the latest IMU bias estimate.
-   * @param imu_bias_update_callback function that will be called on a new
-   * IMU bias update.
-   */
-  void registerImuBiasUpdateCallback(
-      const VioBackend::ImuBiasCallback& imu_bias_update_callback);
+    /**
+     * @brief registerImuBiasUpdateCallback Register callback to be called
+     * whenever the Backend has a new estimate of the IMU bias.
+     * The Frontend needs to register this function for
+     * the IMU preintegration to be done wrt the latest IMU bias estimate.
+     * @param imu_bias_update_callback function that will be called on a new
+     * IMU bias update.
+     */
+    void registerImuBiasUpdateCallback(
+        const VioBackend::ImuBiasCallback& imu_bias_update_callback);
 
- protected:
-  const VioBackend::UniquePtr vio_backend_;
+  protected:
+    const VioBackend::UniquePtr vio_backend_;
 };
 
 }  // namespace VIO

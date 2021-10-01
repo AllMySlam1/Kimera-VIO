@@ -24,16 +24,16 @@
 namespace VIO {
 
 class VisualizerFactory {
- public:
-  KIMERA_POINTER_TYPEDEFS(VisualizerFactory);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(VisualizerFactory);
-  VisualizerFactory() = delete;
-  virtual ~VisualizerFactory() = default;
+  public:
+    KIMERA_POINTER_TYPEDEFS(VisualizerFactory);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(VisualizerFactory);
+    VisualizerFactory()          = delete;
+    virtual ~VisualizerFactory() = default;
 
-  static Visualizer3D::UniquePtr createVisualizer(
-      const VisualizerType visualizer_type,
-      const VisualizationType& viz_type,
-      const BackendType& backend_type);
+    static Visualizer3D::UniquePtr
+    createVisualizer(const VisualizerType     visualizer_type,
+                     const VisualizationType& viz_type,
+                     const BackendType&       backend_type);
 };
 
 }  // namespace VIO

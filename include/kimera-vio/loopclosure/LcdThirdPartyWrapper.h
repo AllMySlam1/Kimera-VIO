@@ -55,62 +55,67 @@ POSSIBILITY OF SUCH DAMAGE.
 namespace VIO {
 
 class LcdThirdPartyWrapper {
- public:
-  KIMERA_POINTER_TYPEDEFS(LcdThirdPartyWrapper);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(LcdThirdPartyWrapper);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  public:
+    KIMERA_POINTER_TYPEDEFS(LcdThirdPartyWrapper);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(LcdThirdPartyWrapper);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  /* ------------------------------------------------------------------------ */
-  /** @brief Constructor: wrapper for functions of DLoopDetector that are used
-   *  in the loop-closure-detection pipeline by LoopClosureDetector.
-   * @param[in] params The LoopClosureDetectorParams object with all relevant
-   *  parameters.
-   */
-  explicit LcdThirdPartyWrapper(const LoopClosureDetectorParams& params);
+    /* ------------------------------------------------------------------------
+     */
+    /** @brief Constructor: wrapper for functions of DLoopDetector that are used
+     *  in the loop-closure-detection pipeline by LoopClosureDetector.
+     * @param[in] params The LoopClosureDetectorParams object with all relevant
+     *  parameters.
+     */
+    explicit LcdThirdPartyWrapper(const LoopClosureDetectorParams& params);
 
-  /* ------------------------------------------------------------------------ */
-  virtual ~LcdThirdPartyWrapper();
+    /* ------------------------------------------------------------------------
+     */
+    virtual ~LcdThirdPartyWrapper();
 
-  /* ------------------------------------------------------------------------ */
-  /** @brief Determines whether a frame meets the temoral constraint given by
-   *  a MatchIsland.
-   * @param[in] id The frame ID of the frame being processed in the database.
-   * @param[in] island A MatchIsland representing several potential matches.
-   * @return True if the constraint is met, false otherwise.
-   */
-  // TODO(marcus): unit tests
-  bool checkTemporalConstraint(const FrameId& id, const MatchIsland& island);
+    /* ------------------------------------------------------------------------
+     */
+    /** @brief Determines whether a frame meets the temoral constraint given by
+     *  a MatchIsland.
+     * @param[in] id The frame ID of the frame being processed in the database.
+     * @param[in] island A MatchIsland representing several potential matches.
+     * @return True if the constraint is met, false otherwise.
+     */
+    // TODO(marcus): unit tests
+    bool checkTemporalConstraint(const FrameId& id, const MatchIsland& island);
 
-  /* ------------------------------------------------------------------------ */
-  /** @brief Computes the various islands created by a QueryResult, which is
-   *  given by the OrbDatabase.
-   * @param[in] q A QueryResults object containing all the resulting possible
-   *  matches with a frame.
-   * @param[out] A vector of MatchIslands, each of which is an island of
-   *  nearby possible matches with the frame being queried.
-   */
-  // TODO(marcus): unit tests
-  void computeIslands(DBoW2::QueryResults* q,
-                      std::vector<MatchIsland>* islands) const;
+    /* ------------------------------------------------------------------------
+     */
+    /** @brief Computes the various islands created by a QueryResult, which is
+     *  given by the OrbDatabase.
+     * @param[in] q A QueryResults object containing all the resulting possible
+     *  matches with a frame.
+     * @param[out] A vector of MatchIslands, each of which is an island of
+     *  nearby possible matches with the frame being queried.
+     */
+    // TODO(marcus): unit tests
+    void computeIslands(DBoW2::QueryResults*      q,
+                        std::vector<MatchIsland>* islands) const;
 
- private:
-  /* ------------------------------------------------------------------------ */
-  /** @brief Compute the overall score of an island.
-   * @param[in] q A QueryResults object containing all the possible matches
-   *  with a frame.
-   * @param[in] start_id The frame ID that starts the island.
-   * @param[in] end_id The frame ID that ends the island.
-   * @reutrn The score of the island.
-   */
-  double computeIslandScore(const DBoW2::QueryResults& q,
-                            const FrameId& start_id,
-                            const FrameId& end_id) const;
+  private:
+    /* ------------------------------------------------------------------------
+     */
+    /** @brief Compute the overall score of an island.
+     * @param[in] q A QueryResults object containing all the possible matches
+     *  with a frame.
+     * @param[in] start_id The frame ID that starts the island.
+     * @param[in] end_id The frame ID that ends the island.
+     * @reutrn The score of the island.
+     */
+    double computeIslandScore(const DBoW2::QueryResults& q,
+                              const FrameId&             start_id,
+                              const FrameId&             end_id) const;
 
- private:
-  LoopClosureDetectorParams lcd_params_;
-  int temporal_entries_;
-  MatchIsland latest_matched_island_;
-  FrameId latest_query_id_;
+  private:
+    LoopClosureDetectorParams lcd_params_;
+    int                       temporal_entries_;
+    MatchIsland               latest_matched_island_;
+    FrameId                   latest_query_id_;
 };  // class LcdThirdPartyWrapper
 
 }  // namespace VIO

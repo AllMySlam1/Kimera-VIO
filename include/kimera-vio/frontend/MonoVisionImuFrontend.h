@@ -33,77 +33,79 @@
 namespace VIO {
 
 class MonoVisionImuFrontend : public VisionImuFrontend {
- public:
-  KIMERA_POINTER_TYPEDEFS(MonoVisionImuFrontend);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(MonoVisionImuFrontend);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+  public:
+    KIMERA_POINTER_TYPEDEFS(MonoVisionImuFrontend);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(MonoVisionImuFrontend);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
- public:
-  MonoVisionImuFrontend(const ImuParams& imu_params,
-                     const ImuBias& imu_initial_bias,
-                     const MonoFrontendParams& frontend_params,
-                     const Camera::ConstPtr& camera,
-                     DisplayQueue* display_queue = nullptr,
-                     bool log_output = false);
-  virtual ~MonoVisionImuFrontend();
+  public:
+    MonoVisionImuFrontend(const ImuParams&          imu_params,
+                          const ImuBias&            imu_initial_bias,
+                          const MonoFrontendParams& frontend_params,
+                          const Camera::ConstPtr&   camera,
+                          DisplayQueue*             display_queue = nullptr,
+                          bool                      log_output    = false);
+    virtual ~MonoVisionImuFrontend();
 
- private:
-  void processFirstFrame(const Frame& firstFrame);
+  private:
+    void processFirstFrame(const Frame& firstFrame);
 
-  inline FrontendOutputPacketBase::UniquePtr bootstrapSpin(
-      FrontendInputPacketBase::UniquePtr&& input) override {
-    CHECK(frontend_state_ == FrontendState::Bootstrap);
-    CHECK(input);
-    return bootstrapSpinMono(
-        VIO::safeCast<FrontendInputPacketBase, MonoFrontendInputPayload>(
-            std::move(input)));
-  }
+    inline FrontendOutputPacketBase::UniquePtr
+    bootstrapSpin(FrontendInputPacketBase::UniquePtr&& input) override
+    {
+        CHECK(frontend_state_ == FrontendState::Bootstrap);
+        CHECK(input);
+        return bootstrapSpinMono(
+            VIO::safeCast<FrontendInputPacketBase, MonoFrontendInputPayload>(
+                std::move(input)));
+    }
 
-  inline FrontendOutputPacketBase::UniquePtr nominalSpin(
-      FrontendInputPacketBase::UniquePtr&& input) override {
-    CHECK(frontend_state_ == FrontendState::Nominal);
-    CHECK(input);
-    return nominalSpinMono(
-        VIO::safeCast<FrontendInputPacketBase, MonoFrontendInputPayload>(
-            std::move(input)));
-  }
+    inline FrontendOutputPacketBase::UniquePtr
+    nominalSpin(FrontendInputPacketBase::UniquePtr&& input) override
+    {
+        CHECK(frontend_state_ == FrontendState::Nominal);
+        CHECK(input);
+        return nominalSpinMono(
+            VIO::safeCast<FrontendInputPacketBase, MonoFrontendInputPayload>(
+                std::move(input)));
+    }
 
-  MonoFrontendOutput::UniquePtr nominalSpinMono(
-      MonoFrontendInputPayload::UniquePtr&& input);
+    MonoFrontendOutput::UniquePtr
+    nominalSpinMono(MonoFrontendInputPayload::UniquePtr&& input);
 
-  MonoFrontendOutput::UniquePtr bootstrapSpinMono(
-      MonoFrontendInputPayload::UniquePtr&& input);
+    MonoFrontendOutput::UniquePtr
+    bootstrapSpinMono(MonoFrontendInputPayload::UniquePtr&& input);
 
-  StatusMonoMeasurementsPtr processFrame(
-      const Frame& cur_frame,
-      const gtsam::Rot3& keyframe_R_ref_frame,
-      cv::Mat* feature_tracks = nullptr);
+    StatusMonoMeasurementsPtr
+    processFrame(const Frame&       cur_frame,
+                 const gtsam::Rot3& keyframe_R_ref_frame,
+                 cv::Mat*           feature_tracks = nullptr);
 
-  void getSmartMonoMeasurements(const Frame::Ptr& frame,
-                                MonoMeasurements* smart_mono_measurements);
+    void getSmartMonoMeasurements(const Frame::Ptr& frame,
+                                  MonoMeasurements* smart_mono_measurements);
 
-  // void sendFeatureTracksToLogger() const;
+    // void sendFeatureTracksToLogger() const;
 
-  // void sendMonoTrackingToLogger() const;
+    // void sendMonoTrackingToLogger() const;
 
-  static void printStatusMonoMeasurements(
-      const StatusMonoMeasurements& status_mono_measurements);
+    static void printStatusMonoMeasurements(
+        const StatusMonoMeasurements& status_mono_measurements);
 
- private:
-  // Current frame
-  Frame::Ptr mono_frame_k_;
-  // Last frame
-  Frame::Ptr mono_frame_km1_;
-  // Last keyframe
-  Frame::Ptr mono_frame_lkf_;
+  private:
+    // Current frame
+    Frame::Ptr mono_frame_k_;
+    // Last frame
+    Frame::Ptr mono_frame_km1_;
+    // Last keyframe
+    Frame::Ptr mono_frame_lkf_;
 
-  gtsam::Rot3 keyframe_R_ref_frame_;
+    gtsam::Rot3 keyframe_R_ref_frame_;
 
-  FeatureDetector::UniquePtr feature_detector_;
+    FeatureDetector::UniquePtr feature_detector_;
 
-  Camera::ConstPtr mono_camera_;
+    Camera::ConstPtr mono_camera_;
 
-  MonoFrontendParams frontend_params_;
+    MonoFrontendParams frontend_params_;
 };
 
 }  // namespace VIO

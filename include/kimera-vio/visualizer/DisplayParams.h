@@ -31,30 +31,31 @@ enum class DisplayType { kOpenCV = 0, kPangolin = 1 };
  * Class describing display parameters.
  */
 class DisplayParams : public PipelineParams {
- public:
-  KIMERA_POINTER_TYPEDEFS(DisplayParams);
+  public:
+    KIMERA_POINTER_TYPEDEFS(DisplayParams);
 
-  DisplayParams();
-  DisplayParams(const DisplayType& display_type);
-  ~DisplayParams() override = default;
+    DisplayParams();
+    DisplayParams(const DisplayType& display_type);
+    ~DisplayParams() override = default;
 
-  // Parse YAML file describing camera parameters.
-  bool parseYAML(const std::string& filepath) override;
+    // Parse YAML file describing camera parameters.
+    bool parseYAML(const std::string& filepath) override;
 
-  // Display all params.
-  void print() const override;
+    // Display all params.
+    void print() const override;
 
-  // Assert equality up to a tolerance.
-  virtual bool equals(const DisplayParams& cam_par,
-                      const double& tol = 1e-9) const;
+    // Assert equality up to a tolerance.
+    virtual bool equals(const DisplayParams& cam_par,
+                        const double&        tol = 1e-9) const;
 
- protected:
-  bool equals(const PipelineParams& rhs) const override {
-    return equals(static_cast<const DisplayParams&>(rhs), 1e-9);
-  }
+  protected:
+    bool equals(const PipelineParams& rhs) const override
+    {
+        return equals(static_cast<const DisplayParams&>(rhs), 1e-9);
+    }
 
- public:
-  DisplayType display_type_;
+  public:
+    DisplayType display_type_;
 };
 
 }  // namespace VIO

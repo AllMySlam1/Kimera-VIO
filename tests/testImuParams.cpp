@@ -24,57 +24,60 @@ DECLARE_string(test_data_path);
 namespace VIO {
 
 class ImuParamsFixture : public ::testing::Test {
- public:
-  ImuParamsFixture() = default;
+  public:
+    ImuParamsFixture() = default;
 
- protected:
-  virtual void SetUp() {}
-  virtual void TearDown() {}
+  protected:
+    virtual void SetUp() {}
+    virtual void TearDown() {}
 
-  // Helper function
-  void parseParamsManually() {
-    ImuParams imu_params;
-    parsePipelineParams(FLAGS_test_data_path + "/EurocParams/ImuParams.yaml",
-                        &imu_params);
-  }
+    // Helper function
+    void parseParamsManually()
+    {
+        ImuParams imu_params;
+        parsePipelineParams(
+            FLAGS_test_data_path + "/EurocParams/ImuParams.yaml", &imu_params);
+    }
 
-  // Default Parms
-  ImuParams imu_params_;
+    // Default Parms
+    ImuParams imu_params_;
 };
 
-TEST_F(ImuParamsFixture, defaultEquality) {
-  // Build default params
-  ImuParams default_imu_params;
-  // Compare
-  EXPECT_EQ(default_imu_params, default_imu_params);
+TEST_F(ImuParamsFixture, defaultEquality)
+{
+    // Build default params
+    ImuParams default_imu_params;
+    // Compare
+    EXPECT_EQ(default_imu_params, default_imu_params);
 
-  // Build default params 2
-  ImuParams default_imu_params_2;
-  // Compare
-  EXPECT_EQ(default_imu_params_2, default_imu_params);
+    // Build default params 2
+    ImuParams default_imu_params_2;
+    // Compare
+    EXPECT_EQ(default_imu_params_2, default_imu_params);
 
-  // Modify default
-  ImuParams modified_imu_params;
-  modified_imu_params.gyro_noise_density_ = 123.4;
-  // Compare
-  EXPECT_NE(modified_imu_params, default_imu_params);
+    // Modify default
+    ImuParams modified_imu_params;
+    modified_imu_params.gyro_noise_density_ = 123.4;
+    // Compare
+    EXPECT_NE(modified_imu_params, default_imu_params);
 
-  // Parse params, expect different from default.
-  parseParamsManually();
-  EXPECT_EQ(imu_params_, default_imu_params);
+    // Parse params, expect different from default.
+    parseParamsManually();
+    EXPECT_EQ(imu_params_, default_imu_params);
 }
 
-TEST_F(ImuParamsFixture, defaultConstructorWithParsing) {
-  // Use vio params parser
-  ImuParams imu_params;
+TEST_F(ImuParamsFixture, defaultConstructorWithParsing)
+{
+    // Use vio params parser
+    ImuParams imu_params;
 
-  // Fill manually (looking at yaml file)
+    // Fill manually (looking at yaml file)
 
-  // Parse from file
-  parseParamsManually();
+    // Parse from file
+    parseParamsManually();
 
-  // Compare
-  EXPECT_EQ(imu_params, imu_params_);
+    // Compare
+    EXPECT_EQ(imu_params, imu_params_);
 }
 
 }  // namespace VIO

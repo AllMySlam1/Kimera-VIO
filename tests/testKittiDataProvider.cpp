@@ -31,7 +31,8 @@ using namespace VIO;
 using namespace cv;
 
 // TODO(Yun)
-TEST(testFrame, KittiDataProvider) {
-  // TODO: test kitti data provider Check image lists and also imu data parsing
-  // Construct a frame from image name.
+TEST(testFrame, KittiDataProvider)
+{
+    // TODO: test kitti data provider Check image lists and also imu data
+    // parsing Construct a frame from image name.
 }

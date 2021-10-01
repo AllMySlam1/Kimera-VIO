@@ -18,44 +18,50 @@
 
 namespace VIO {
 
-DisplayModule::DisplayModule(DisplayQueue* input_queue,
-                             OutputQueue* output_queue,
-                             bool parallel_run,
+DisplayModule::DisplayModule(DisplayQueue*            input_queue,
+                             OutputQueue*             output_queue,
+                             bool                     parallel_run,
                              DisplayBase::UniquePtr&& display)
     : SISO(input_queue, output_queue, "Display", parallel_run),
-      display_(std::move(display)) {}
-
-DisplayModule::OutputUniquePtr DisplayModule::spinOnce(
-    InputUniquePtr input) {
-  CHECK(input);
-  if (display_) display_->spinOnce(std::move(input));
-  return VIO::make_unique<NullPipelinePayload>();
+      display_(std::move(display))
+{
 }
 
-typename DisplayModule::MISO::InputUniquePtr DisplayModule::getInputPacket() {
-  if (display_ && display_->display_type_ == DisplayType::kPangolin) {
-    // If we are using pangolin just fake a constant input of messages
-    // to not block the visualizer.
-    return VIO::make_unique<DisplayInputBase>();
-  }
+DisplayModule::OutputUniquePtr DisplayModule::spinOnce(InputUniquePtr input)
+{
+    CHECK(input);
+    if (display_)
+        display_->spinOnce(std::move(input));
+    return VIO::make_unique<NullPipelinePayload>();
+}
 
-  typename MISO::InputUniquePtr input = nullptr;
-  bool queue_state = false;
+typename DisplayModule::MISO::InputUniquePtr DisplayModule::getInputPacket()
+{
+    if (display_ && display_->display_type_ == DisplayType::kPangolin) {
+        // If we are using pangolin just fake a constant input of messages
+        // to not block the visualizer.
+        return VIO::make_unique<DisplayInputBase>();
+    }
 
-  if (MISO::parallel_run_) {
-    queue_state = input_queue_->popBlocking(input);
-  } else {
-    queue_state = input_queue_->pop(input);
-  }
+    typename MISO::InputUniquePtr input       = nullptr;
+    bool                          queue_state = false;
 
-  if (queue_state) {
-    return input;
-  } else {
-    LOG(WARNING) << "Module: " << MISO::name_id_ << " - "
-                 << "Input queue: " << input_queue_->queue_id_
-                 << " didn't return an output.";
-    return nullptr;
-  }
+    if (MISO::parallel_run_) {
+        queue_state = input_queue_->popBlocking(input);
+    }
+    else {
+        queue_state = input_queue_->pop(input);
+    }
+
+    if (queue_state) {
+        return input;
+    }
+    else {
+        LOG(WARNING) << "Module: " << MISO::name_id_ << " - "
+                     << "Input queue: " << input_queue_->queue_id_
+                     << " didn't return an output.";
+        return nullptr;
+    }
 }
 
 }  // namespace VIO

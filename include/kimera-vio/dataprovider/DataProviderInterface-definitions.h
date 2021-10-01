@@ -30,69 +30,73 @@ namespace VIO {
 
 // TODO(Toni): this shouldn't be here, but in initialization
 // Struct for performance in initialization
-struct InitializationPerformance {
- public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  // Default constructor
-  InitializationPerformance(const Timestamp& init_timestamp,
-                            const int& init_n_frames,
-                            const double& avg_rotationErrorBA,
-                            const double& avg_tranErrorBA,
-                            const VioNavState& init_nav_state,
-                            const gtsam::Vector3& init_gravity,
-                            const VioNavState& gt_nav_state,
-                            const gtsam::Vector3& gt_gravity);
-  ~InitializationPerformance() = default;
+struct InitializationPerformance
+{
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    // Default constructor
+    InitializationPerformance(const Timestamp&      init_timestamp,
+                              const int&            init_n_frames,
+                              const double&         avg_rotationErrorBA,
+                              const double&         avg_tranErrorBA,
+                              const VioNavState&    init_nav_state,
+                              const gtsam::Vector3& init_gravity,
+                              const VioNavState&    gt_nav_state,
+                              const gtsam::Vector3& gt_gravity);
+    ~InitializationPerformance() = default;
 
- public:
-  void print() const;
+  public:
+    void print() const;
 
- public:
-  const Timestamp init_timestamp_;
-  const int init_n_frames_;
-  const double avg_rotationErrorBA_;
-  const double avg_tranErrorBA_;
-  const VioNavState init_nav_state_;
-  const gtsam::Vector3 init_gravity_;
-  const VioNavState gt_nav_state_;
-  const gtsam::Vector3 gt_gravity_;
+  public:
+    const Timestamp      init_timestamp_;
+    const int            init_n_frames_;
+    const double         avg_rotationErrorBA_;
+    const double         avg_tranErrorBA_;
+    const VioNavState    init_nav_state_;
+    const gtsam::Vector3 init_gravity_;
+    const VioNavState    gt_nav_state_;
+    const gtsam::Vector3 gt_gravity_;
 };
 
 /*
  * Store GT poses and GT info.
  */
 class GroundTruthData {
- public:
-  // Display all params.
-  void print() const;
+  public:
+    // Display all params.
+    void print() const;
 
- public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  // Sensor extrinsics wrt. the body-frame
-  gtsam::Pose3 body_Pose_prism_;
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    // Sensor extrinsics wrt. the body-frame
+    gtsam::Pose3 body_Pose_prism_;
 
-  // Data rate in seconds, for debug.
-  double gt_rate_;
+    // Data rate in seconds, for debug.
+    double gt_rate_;
 
-  // Map from timestamp to VioNavState.
-  std::map<Timestamp, VioNavState> map_to_gt_;
+    // Map from timestamp to VioNavState.
+    std::map<Timestamp, VioNavState> map_to_gt_;
 };
 
 /*
  * Store a list of image names and provide functionalities to parse them.
  */
 class CameraImageLists {
- public:
-  bool parseCamImgList(const std::string& folderpath,
-                       const std::string& filename);
-  inline size_t getNumImages() const { return img_lists_.size(); }
-  void print() const;
+  public:
+    bool          parseCamImgList(const std::string& folderpath,
+                                  const std::string& filename);
+    inline size_t getNumImages() const
+    {
+        return img_lists_.size();
+    }
+    void print() const;
 
- public:
-  std::string image_folder_path_;
-  typedef std::pair<Timestamp, std::string> TimestampToFilename;
-  typedef std::vector<TimestampToFilename> ImgLists;
-  ImgLists img_lists_;
+  public:
+    std::string                               image_folder_path_;
+    typedef std::pair<Timestamp, std::string> TimestampToFilename;
+    typedef std::vector<TimestampToFilename>  ImgLists;
+    ImgLists                                  img_lists_;
 };
 
 }  // namespace VIO

@@ -14,4 +14,5 @@
 
 #include "kimera-vio/pipeline/PipelineModule.h"
 
-namespace VIO {}  // namespace VIO
+namespace VIO {
+}  // namespace VIO

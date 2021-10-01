@@ -20,31 +20,31 @@
 
 namespace VIO {
 
-MonoImuSyncPacket::MonoImuSyncPacket(Frame::UniquePtr frame,
-                                     const ImuStampS& imu_stamps,
+MonoImuSyncPacket::MonoImuSyncPacket(Frame::UniquePtr  frame,
+                                     const ImuStampS&  imu_stamps,
                                      const ImuAccGyrS& imu_accgyrs)
-    : FrontendInputPacketBase(frame->timestamp_,
-                              imu_stamps,
-                              imu_accgyrs),
-      frame_(std::move(frame)) {
-  CHECK_GT(imu_stamps_.cols(), 0u);
-  CHECK_EQ(frame_->timestamp_, imu_stamps_(imu_stamps_.cols() - 1));
+    : FrontendInputPacketBase(frame->timestamp_, imu_stamps, imu_accgyrs),
+      frame_(std::move(frame))
+{
+    CHECK_GT(imu_stamps_.cols(), 0u);
+    CHECK_EQ(frame_->timestamp_, imu_stamps_(imu_stamps_.cols() - 1));
 }
 
-void MonoImuSyncPacket::print() const {
-  LOG(INFO) << "Mono Frame timestamp: " << frame_->timestamp_ << '\n'
-            << "STAMPS IMU rows : \n"
-            << imu_stamps_.rows() << '\n'
-            << "STAMPS IMU cols : \n"
-            << imu_stamps_.cols() << '\n'
-            << "STAMPS IMU: \n"
-            << imu_stamps_ << '\n'
-            << "ACCGYR IMU rows : \n"
-            << imu_accgyrs_.rows() << '\n'
-            << "ACCGYR IMU cols : \n"
-            << imu_accgyrs_.cols() << '\n'
-            << "ACCGYR IMU: \n"
-            << imu_accgyrs_;
+void MonoImuSyncPacket::print() const
+{
+    LOG(INFO) << "Mono Frame timestamp: " << frame_->timestamp_ << '\n'
+              << "STAMPS IMU rows : \n"
+              << imu_stamps_.rows() << '\n'
+              << "STAMPS IMU cols : \n"
+              << imu_stamps_.cols() << '\n'
+              << "STAMPS IMU: \n"
+              << imu_stamps_ << '\n'
+              << "ACCGYR IMU rows : \n"
+              << imu_accgyrs_.rows() << '\n'
+              << "ACCGYR IMU cols : \n"
+              << imu_accgyrs_.cols() << '\n'
+              << "ACCGYR IMU: \n"
+              << imu_accgyrs_;
 }
 
 }  // namespace VIO

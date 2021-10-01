@@ -24,34 +24,36 @@
 namespace VIO {
 
 class FrontendOutputPacketBase : public PipelinePayload {
- public:
-  KIMERA_POINTER_TYPEDEFS(FrontendOutputPacketBase);
-  KIMERA_DELETE_COPY_CONSTRUCTORS(FrontendOutputPacketBase);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  public:
+    KIMERA_POINTER_TYPEDEFS(FrontendOutputPacketBase);
+    KIMERA_DELETE_COPY_CONSTRUCTORS(FrontendOutputPacketBase);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  FrontendOutputPacketBase(const Timestamp& timestamp,
-                           const bool is_keyframe,
-                           const FrontendType frontend_type,
-                           const ImuFrontend::PimPtr& pim,
-                           const ImuAccGyrS& imu_acc_gyrs,
-                           const DebugTrackerInfo& debug_tracker_info)
-      : PipelinePayload(timestamp),
-        is_keyframe_(is_keyframe),
-        frontend_type_(frontend_type),
-        pim_(pim),
-        imu_acc_gyrs_(imu_acc_gyrs),
-        debug_tracker_info_(debug_tracker_info) {}
+    FrontendOutputPacketBase(const Timestamp&           timestamp,
+                             const bool                 is_keyframe,
+                             const FrontendType         frontend_type,
+                             const ImuFrontend::PimPtr& pim,
+                             const ImuAccGyrS&          imu_acc_gyrs,
+                             const DebugTrackerInfo&    debug_tracker_info)
+        : PipelinePayload(timestamp), is_keyframe_(is_keyframe),
+          frontend_type_(frontend_type), pim_(pim), imu_acc_gyrs_(imu_acc_gyrs),
+          debug_tracker_info_(debug_tracker_info)
+    {
+    }
 
-  virtual ~FrontendOutputPacketBase() = default;
+    virtual ~FrontendOutputPacketBase() = default;
 
- public:
-  const bool is_keyframe_;
-  const FrontendType frontend_type_;
-  const ImuFrontend::PimPtr pim_;
-  const ImuAccGyrS imu_acc_gyrs_;
-  const DebugTrackerInfo debug_tracker_info_;
+  public:
+    const bool                is_keyframe_;
+    const FrontendType        frontend_type_;
+    const ImuFrontend::PimPtr pim_;
+    const ImuAccGyrS          imu_acc_gyrs_;
+    const DebugTrackerInfo    debug_tracker_info_;
 
-  inline DebugTrackerInfo getTrackerInfo() const { return debug_tracker_info_; }
+    inline DebugTrackerInfo getTrackerInfo() const
+    {
+        return debug_tracker_info_;
+    }
 };
 
 }  // namespace VIO

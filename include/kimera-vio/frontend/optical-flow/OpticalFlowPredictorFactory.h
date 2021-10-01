@@ -21,25 +21,26 @@
 namespace VIO {
 
 class OpticalFlowPredictorFactory {
- public:
-  template <class... Args>
-  static OpticalFlowPredictor::UniquePtr makeOpticalFlowPredictor(
-      const OpticalFlowPredictorType& optical_flow_predictor_type,
-      Args&&... args) {
-    switch (optical_flow_predictor_type) {
-      case OpticalFlowPredictorType::kNoPrediction: {
-        return VIO::make_unique<NoOpticalFlowPredictor>();
-      }
-      case OpticalFlowPredictorType::kRotational: {
-        return VIO::make_unique<RotationalOpticalFlowPredictor>(
-            std::forward<Args>(args)...);
-      }
-      default: {
-        LOG(FATAL) << "Unknown OpticalFlowPredictorType: "
-                   << static_cast<int>(optical_flow_predictor_type);
-      }
+  public:
+    template <class... Args>
+    static OpticalFlowPredictor::UniquePtr makeOpticalFlowPredictor(
+        const OpticalFlowPredictorType& optical_flow_predictor_type,
+        Args&&... args)
+    {
+        switch (optical_flow_predictor_type) {
+            case OpticalFlowPredictorType::kNoPrediction: {
+                return VIO::make_unique<NoOpticalFlowPredictor>();
+            }
+            case OpticalFlowPredictorType::kRotational: {
+                return VIO::make_unique<RotationalOpticalFlowPredictor>(
+                    std::forward<Args>(args)...);
+            }
+            default: {
+                LOG(FATAL) << "Unknown OpticalFlowPredictorType: "
+                           << static_cast<int>(optical_flow_predictor_type);
+            }
+        }
     }
-  }
 };
 
 }  // namespace VIO

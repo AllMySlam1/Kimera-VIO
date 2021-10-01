@@ -20,24 +20,24 @@
 namespace VIO {
 
 class Visualizer3D {
- public:
-  KIMERA_DELETE_COPY_CONSTRUCTORS(Visualizer3D);
-  KIMERA_POINTER_TYPEDEFS(Visualizer3D);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  public:
+    KIMERA_DELETE_COPY_CONSTRUCTORS(Visualizer3D);
+    KIMERA_POINTER_TYPEDEFS(Visualizer3D);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  /**
-   * @brief Visualizer3D base constructor
-   * @param viz_type: type of 3D visualization
-   */
-  Visualizer3D(const VisualizationType& viz_type);
-  virtual ~Visualizer3D() = default;
+    /**
+     * @brief Visualizer3D base constructor
+     * @param viz_type: type of 3D visualization
+     */
+    Visualizer3D(const VisualizationType& viz_type);
+    virtual ~Visualizer3D() = default;
 
- public:
-  virtual VisualizerOutput::UniquePtr spinOnce(
-      const VisualizerInput& input) = 0;
+  public:
+    virtual VisualizerOutput::UniquePtr
+    spinOnce(const VisualizerInput& input) = 0;
 
- public:
-  VisualizationType visualization_type_;
+  public:
+    VisualizationType visualization_type_;
 };
 
 }  // namespace VIO

@@ -21,20 +21,20 @@
 namespace VIO {
 
 class RgbdFrame : public PipelinePayload {
- public:
-  KIMERA_DELETE_COPY_CONSTRUCTORS(RgbdFrame);
-  KIMERA_POINTER_TYPEDEFS(RgbdFrame);
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  public:
+    KIMERA_DELETE_COPY_CONSTRUCTORS(RgbdFrame);
+    KIMERA_POINTER_TYPEDEFS(RgbdFrame);
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  RgbdFrame(const FrameId& id,
-            const Timestamp& timestamp,
-            Frame::UniquePtr intensity_img,
-            DepthFrame::UniquePtr depth_img);
+    RgbdFrame(const FrameId&        id,
+              const Timestamp&      timestamp,
+              Frame::UniquePtr      intensity_img,
+              DepthFrame::UniquePtr depth_img);
 
- public:
-  const FrameId id_;
-  Frame::UniquePtr intensity_img_;
-  DepthFrame::UniquePtr depth_img_;
+  public:
+    const FrameId         id_;
+    Frame::UniquePtr      intensity_img_;
+    DepthFrame::UniquePtr depth_img_;
 };
 
 }  // namespace VIO
